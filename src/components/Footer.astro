@@ -1,0 +1,46 @@
+---
+import { footer, links } from '../content/site';
+import Landscape from './Landscape.astro';
+---
+<footer class="footer">
+  <div class="wrap foot-top">
+    <a class="word" href="#top">kitchen</a>
+    <ul class="foot-links">
+      {footer.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      <li><a href={links.bookDemo} data-demo="footer">./book-a-demo</a></li>
+    </ul>
+    <ul class="foot-links socials">
+      {links.socials.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+    </ul>
+  </div>
+  <p class="wrap signoff mono">// {footer.signoff} · © {new Date().getFullYear()}</p>
+  <Landscape variant="footer" />
+</footer>
+
+<style>
+  .footer {
+    background: var(--sky);
+    padding-top: clamp(72px, 10vw, 120px);
+    transition: background-color .8s ease;
+    overflow: hidden;
+  }
+  .foot-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 56px;
+    align-items: baseline;
+  }
+  .word { font: 400 56px/1 var(--serif); text-decoration: none; margin-right: auto; }
+  .foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font: 400 14px var(--mono);
+  }
+  .foot-links a { text-decoration: none; }
+  .foot-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .signoff { margin-top: 28px; margin-bottom: 0; opacity: .8; }
+</style>

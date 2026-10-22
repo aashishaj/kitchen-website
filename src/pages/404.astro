@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import BinaryArt from '../components/BinaryArt.astro';
+---
+<Base title="error 404: dish not found · kitchen">
+  <Nav />
+  <main id="main" class="lost wrap">
+    <div class="plate"><BinaryArt name="empty-plate" label="an empty plate with a few crumbs, made of binary digits" /></div>
+    <p class="label">// error 404</p>
+    <h1>dish not found.</h1>
+    <p class="lede">Someone ate this page. <a class="link" href="/#menu">back to ~/menu</a></p>
+  </main>
+</Base>
+
+<style>
+  .lost { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-top: 100px; padding-bottom: 80px; }
+  .plate { max-width: 300px; margin-bottom: 32px; }
+</style>

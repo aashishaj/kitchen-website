@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+import { meta } from '../content/site';
+
+interface Props { title?: string; description?: string }
+const { title = meta.title, description = meta.description } = Astro.props;
+const og = new URL('/og.png', Astro.site).toString();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={og} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#6FA3DC" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&display=swap"
+    />
+    <!-- Theme and copy mode before first paint: saved choice, else system setting. -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement, t = null, m = null;
+        try { t = localStorage.getItem('kitchen-theme'); m = localStorage.getItem('kitchen-mode'); } catch (e) {}
+        d.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        d.dataset.mode = m || 'story';
+      })();
+      // Analytics placeholder: forwards events to Plausible or a dataLayer if one is added.
+      window.track = function (name, props) {
+        if (window.plausible) window.plausible(name, { props: props });
+        (window.dataLayer = window.dataLayer || []).push(Object.assign({ event: name }, props));
+      };
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">skip to content</a>
+    <slot />
+    <script>
+      import '../scripts/binary-art.ts';
+      import '../scripts/ui.ts';
+    </script>
+  </body>
+</html>

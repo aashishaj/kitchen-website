@@ -1,0 +1,108 @@
+---
+// Flat, printed-looking landscape: sky shapes, hills, a tree with braces in its
+// leaves, coral bushes and a field whose rows are lines of code. Colors come
+// from CSS tokens, so the same SVG is the afternoon (light) and night (dark).
+interface Props { variant?: 'hero' | 'break' | 'footer'; class?: string }
+const { variant = 'hero', class: cls = '' } = Astro.props;
+
+const rows = [
+  'git clone github.com/you/app && cd app  ·  npm install --silent # soaking…  ·  ✓ served on localhost:3000  ·  ',
+  'export OPENAI_API_KEY=sk-••••  ·  python3 -m pip install -r requirements.txt  ·  kitchen share --team # one click  ·  ',
+  'psql -c "create database app" # frying…  ·  cp .env.example .env # keys sorted  ·  docker compose up # simmering…  ·  ',
+  'kitchen cook github.com/you/app  ·  brewing… soaking… frying… served ✓  ·  offline ✓  ·  0 MB sent to cloud  ·  ',
+];
+const stars = [
+  [90, 70], [210, 140], [340, 50], [470, 110], [610, 60], [720, 150], [840, 40], [930, 120],
+  [1060, 70], [1290, 60], [1370, 150], [150, 220], [560, 210], [1010, 200], [1400, 250], [780, 260],
+];
+const id = `ls-${variant}`;
+---
+<div class:list={['landscape', `landscape--${variant}`, cls]} aria-hidden="true">
+  <svg viewBox="0 0 1440 560" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <defs>
+      <filter id={`${id}-rough`} x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" />
+        <feDisplacementMap in="SourceGraphic" scale="9" />
+      </filter>
+    </defs>
+
+    <!-- night: moon and * stars -->
+    <g class="night">
+      <circle cx="1180" cy="110" r="34" class="moon" />
+      <circle cx="1194" cy="100" r="30" class="moon-cut" />
+      {stars.map(([x, y]) => <text x={x} y={y} class="star">*</text>)}
+    </g>
+
+    <g filter={`url(#${id}-rough)`}>
+      <!-- clouds -->
+      <g class="cloud">
+        <path d="M980 250 q30 -36 74 -18 q22 -30 62 -10 q40 -6 46 28 q-90 14 -182 0z" />
+        <path d="M80 330 q20 -26 56 -12 q24 -20 54 -2 q-56 14 -110 14z" />
+        <path d="M640 300 q22 -18 52 -6 q-28 10 -52 6z" />
+      </g>
+
+      <!-- hills -->
+      <path class="hill" d="M0 420 C 120 330, 230 300, 330 340 C 430 380, 520 400, 640 380 C 760 360, 860 300, 960 290 C 1080 280, 1200 330, 1300 340 C 1360 345, 1410 350, 1440 352 L1440 560 L0 560 Z" />
+
+      <!-- tree, with a few braces hidden in the leaves -->
+      <g class="tree">
+        <rect x="262" y="378" width="14" height="96" />
+        <circle cx="270" cy="342" r="52" />
+        <circle cx="228" cy="370" r="36" />
+        <circle cx="314" cy="372" r="36" />
+        <circle cx="244" cy="312" r="30" />
+        <circle cx="300" cy="308" r="32" />
+        <circle cx="270" cy="296" r="36" />
+        <circle cx="250" cy="360" r="40" />
+        <circle cx="292" cy="356" r="40" />
+      </g>
+      <g class="braces">
+        <text x="236" y="342">{'{'}</text>
+        <text x="292" y="330">{'}'}</text>
+        <text x="262" y="384">;</text>
+      </g>
+
+      <!-- coral bushes -->
+      <path class="bush" d="M760 470 q10 -24 34 -18 q14 -26 42 -12 q20 -22 46 -6 q22 -18 44 0 q26 -20 50 -2 q24 -26 52 -6 q22 -18 46 0 q30 -26 58 -4 q22 -20 48 -2 q26 -22 52 0 q24 -18 46 2 q24 -16 46 4 q22 -14 38 6 q18 -10 38 6 L1440 480 L760 480Z" />
+      <path class="bush" d="M30 470 q12 -14 30 -8 q12 -14 30 -4 q16 -10 30 2 L120 476 L30 476Z" />
+
+      <!-- field -->
+      <path class="field" d="M0 468 C 220 452, 520 462, 760 458 C 1000 454, 1240 446, 1440 452 L1440 560 L0 560 Z" />
+    </g>
+
+    <!-- code rows drift sideways like wind in the grass -->
+    {rows.map((r, i) => (
+      <g class={`row row-${i}`} style={`--y:${494 + i * 22}px`}>
+        <text x="0" y={494 + i * 22} textLength="1440" lengthAdjust="spacingAndGlyphs">{r}{r}</text>
+        <text x="1440" y={494 + i * 22} textLength="1440" lengthAdjust="spacingAndGlyphs">{r}{r}</text>
+      </g>
+    ))}
+  </svg>
+</div>
+
+<style>
+  .landscape { position: relative; width: 100%; pointer-events: none; }
+  .landscape svg { width: 100%; height: clamp(240px, 36vw, 520px); }
+  .landscape--break svg { height: clamp(200px, 26vw, 380px); }
+
+  .cloud path { fill: var(--cloud); transition: fill .8s ease; }
+  .hill { fill: var(--hill); transition: fill .8s ease; }
+  .tree { fill: var(--tree); transition: fill .8s ease; }
+  .braces text { fill: var(--sky); font: 500 18px var(--mono); opacity: .9; }
+  .bush { fill: var(--coral); transition: fill .8s ease; }
+  .field { fill: var(--field); transition: fill .8s ease; }
+  .row text { fill: var(--code-row); font: 400 15px var(--mono); opacity: .85; transition: fill .8s ease; }
+  .row-0 text { font-size: 17px; }
+
+  .night { opacity: var(--moon-opacity); transition: opacity 1.2s ease; }
+  .moon { fill: #F1E7D6; }
+  .moon-cut { fill: var(--sky); }
+  .star { fill: #F1E7D6; font: 400 16px var(--mono); opacity: .8; }
+  .night { transform: translateY(calc((1 - var(--moon-opacity)) * 40px)); transition: opacity 1.2s ease, transform 1.6s ease; }
+
+  .row { animation: drift 140s linear infinite; }
+  .row-1 { animation-duration: 190s; animation-direction: reverse; }
+  .row-2 { animation-duration: 170s; }
+  .row-3 { animation-duration: 230s; animation-direction: reverse; }
+  @keyframes drift { to { transform: translateX(-1440px); } }
+</style>
