@@ -1,0 +1,56 @@
+---
+import { menu } from '../content/site';
+import Title from './Title.astro';
+import Copy from './Copy.astro';
+---
+<section class="section menu" id="menu" aria-labelledby="menu-title">
+  <div class="wrap">
+    <p class="label">{menu.label}</p>
+    <Title id="menu-title" story={menu.story.title} tech={menu.tech.title} />
+    <p class="lede"><Copy story={menu.story.body} tech={menu.tech.body} /></p>
+    <ul class="cards">
+      {menu.items.map((m) => (
+        <li class="card">
+          <p class="cat">// {m.category}</p>
+          <h3>{m.name}</h3>
+          <p class="desc" data-story>{m.story}</p>
+          <dl class="spec" data-tech>
+            <div><dt>repo</dt><dd>{m.repo}</dd></div>
+            <div><dt>stack</dt><dd>{m.stack}</dd></div>
+            <div><dt>size</dt><dd>{m.size}</dd></div>
+          </dl>
+          <p class="dots" aria-hidden="true">··························</p>
+        </li>
+      ))}
+    </ul>
+    <p class="more mono">{menu.more}</p>
+  </div>
+</section>
+
+<style>
+  .cards {
+    list-style: none;
+    margin: 56px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--cloud);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 26px 24px 18px;
+    transition: transform .4s ease, border-color .4s ease, background-color .8s ease;
+  }
+  .card:hover { transform: rotate(-.6deg) translateY(-2px); border-color: var(--coral); }
+  .cat { font: 400 13px var(--mono); color: var(--ink-soft); margin: 0 0 14px; }
+  .card h3 { font-size: 30px; margin-bottom: 12px; }
+  .desc { margin: 0; font-size: .92em; }
+  .spec { margin: 0; font: 400 13px/1.9 var(--mono); }
+  .spec div { display: flex; justify-content: space-between; gap: 12px; }
+  .spec dt { color: var(--ink-soft); }
+  .spec dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
+  .dots { margin: 18px 0 0; color: var(--ink-soft); font: 400 12px var(--mono); overflow: hidden; white-space: nowrap; }
+  .more { margin-top: 28px; color: var(--ink-soft); }
+</style>

@@ -1,0 +1,88 @@
+---
+import { reserve, waitlist } from '../content/site';
+import Title from './Title.astro';
+import BinaryArt from './BinaryArt.astro';
+---
+<section class="section reserve" id="reserve" aria-labelledby="reserve-title">
+  <div class="wrap reserve-grid">
+    <div>
+      <p class="label">{reserve.label}</p>
+      <Title id="reserve-title" story={reserve.story.title} tech={reserve.tech.title} />
+      <form
+        name={waitlist.formName}
+        method="POST"
+        action={waitlist.action || undefined}
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        data-waitlist
+        data-thanks={reserve.thanks}
+        data-error={reserve.error}
+      >
+        <input type="hidden" name="form-name" value={waitlist.formName} />
+        <p class="hp"><label>leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+        <label class="field">
+          <span class="sr">email</span>
+          <span class="prompt" aria-hidden="true">&gt;</span>
+          <input type="email" name="email" required placeholder={reserve.placeholder} autocomplete="email" />
+          <button type="submit">{reserve.button}</button>
+        </label>
+        <p class="msg mono" data-form-msg role="status" aria-live="polite"></p>
+      </form>
+    </div>
+    <div class="reserve-art"><BinaryArt name="bell" label={reserve.art} /></div>
+  </div>
+</section>
+
+<style>
+  .reserve-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+    gap: clamp(40px, 6vw, 96px);
+    align-items: center;
+  }
+  .reserve-art { max-width: 340px; justify-self: center; width: 100%; }
+  form { margin-top: 40px; max-width: 520px; }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 6px 6px 16px;
+    background: var(--cloud);
+    border: 1.5px solid var(--ink);
+    border-radius: 10px;
+    transition: background-color .8s ease;
+  }
+  .field .prompt { font-family: var(--mono); color: var(--ink-soft); }
+  .field input {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: 400 16px var(--mono);
+    caret-color: var(--coral);
+  }
+  .field input:focus { outline: none; }
+  .field:focus-within { outline: 2px dashed var(--coral); outline-offset: 3px; }
+  .field input::placeholder { color: var(--ink-soft); opacity: .8; }
+  button[type='submit'] {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 7px;
+    background: var(--ink);
+    color: var(--paper);
+    font: 600 15px var(--sans);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  form:global(.sending) button { opacity: .6; }
+  form:global(.done) .field { display: none; }
+  .msg { min-height: 1.6em; margin: 14px 0 0; color: var(--ok); }
+  .hp, .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  @media (max-width: 860px) {
+    .reserve-grid { grid-template-columns: 1fr; }
+    .reserve-art { max-width: 240px; justify-self: start; }
+  }
+</style>

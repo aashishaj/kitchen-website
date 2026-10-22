@@ -1,0 +1,17 @@
+---
+import { chefsTable, links } from '../content/site';
+import Title from './Title.astro';
+import Copy from './Copy.astro';
+---
+<section class="section" id="for-teams" aria-labelledby="chefs-title">
+  <div class="wrap chefs">
+    <p class="label">{chefsTable.label}</p>
+    <Title id="chefs-title" story={chefsTable.story.title} tech={chefsTable.tech.title} />
+    <p class="lede"><Copy story={chefsTable.story.body} tech={chefsTable.tech.body} /></p>
+    <a class="btn" href={links.bookDemo} data-demo="chefs-table"><span class="prompt">$</span> {chefsTable.cta.replace(/^\$ /, '')}</a>
+  </div>
+</section>
+
+<style>
+  .chefs .btn { margin-top: 36px; }
+</style>

@@ -1,0 +1,39 @@
+---
+import { table } from '../content/site';
+import Title from './Title.astro';
+import BinaryArt from './BinaryArt.astro';
+---
+<section class="section" aria-labelledby="table-title">
+  <div class="wrap">
+    <p class="label">{table.label}</p>
+    <Title id="table-title" story={table.story.title} tech={table.tech.title} />
+    <div class="table-art"><BinaryArt name="table" label={table.art} /></div>
+    <ul class="seats">
+      {table.seats.map((s, i) => (
+        <li>
+          <p class="label">seat {String(i + 1).padStart(2, '0')}</p>
+          <h3>{s.who}</h3>
+          <p data-story>{s.story}</p>
+          <p data-tech>{s.tech}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .table-art { max-width: 640px; margin: 56px auto 0; }
+  .seats {
+    list-style: none;
+    margin: 48px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+  }
+  .seats .label { margin-bottom: 8px; }
+  .seats h3 { margin-bottom: 10px; }
+  .seats p:last-child { margin: 0; }
+  @media (max-width: 960px) { .seats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 520px) { .seats { grid-template-columns: 1fr; } }
+</style>

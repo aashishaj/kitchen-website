@@ -1,0 +1,29 @@
+---
+// Two-line lowercase serif headline; the second line is italic.
+interface Props { story: string[]; tech?: string[]; level?: 1 | 2; cursor?: boolean; id?: string }
+const { story, tech, level = 2, cursor = false, id } = Astro.props;
+const Tag = level === 1 ? 'h1' : 'h2';
+const lines = (l: string[]) => [l[0], l[1]];
+const [s1, s2] = lines(story);
+const [t1, t2] = lines(tech ?? story);
+// Keep the cursor on the same line as the last word.
+const split = (l: string) => { const i = l.lastIndexOf(' '); return [l.slice(0, i + 1), l.slice(i + 1)]; };
+---
+<Tag id={id}>
+  {tech ? (
+    <>
+      <span data-story>{s1}</span><span data-tech>{t1}</span>
+      {s2 && <em data-story>{cursor ? <>{split(s2)[0]}<span class="nowrap">{split(s2)[1]}<span class="cursor" aria-hidden="true"></span></span></> : s2}</em>}
+      {t2 && <em data-tech>{cursor ? <>{split(t2)[0]}<span class="nowrap">{split(t2)[1]}<span class="cursor" aria-hidden="true"></span></span></> : t2}</em>}
+    </>
+  ) : (
+    <>
+      <span>{s1}</span>
+      {s2 && <em>{s2}</em>}
+    </>
+  )}
+</Tag>
+
+<style>
+  .nowrap { white-space: nowrap; }
+</style>
