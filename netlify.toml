@@ -1,0 +1,23 @@
+# Netlify serves the static site in site/ as-is (no build step).
+# 404.html in site/ is picked up automatically for missing pages.
+[build]
+  publish = "site"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Demo build: keep it out of search results so it doesn't compete with trykitchen.ai.
+    # Remove this line when this becomes the real site.
+    X-Robots-Tag = "noindex"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"

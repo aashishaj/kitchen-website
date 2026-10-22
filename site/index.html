@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en" data-mode="story">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>kitchen · pick an app. we'll do the cooking.</title>
+  <meta name="description" content="Kitchen turns open-source software into apps that run on your own laptop. No setup. No terminal. Your data stays home.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="kitchen · pick an app. we'll do the cooking.">
+  <meta property="og:description" content="Open-source software as real apps on your own laptop. No setup, no terminal. Your data stays home.">
+  <!-- og.png is rendered from the hero by scripts/make-og.sh. Swap to the full https:// URL once deployed. -->
+  <meta property="og:image" content="/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="kitchen: pick an app. we'll do the cooking.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#6FA3DC" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#14213A" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <!-- theme + mode before first paint, so nothing flashes -->
+  <script>
+    (function () {
+      var d = document.documentElement, t, m;
+      try { t = localStorage.getItem('kitchen-theme'); m = localStorage.getItem('kitchen-mode'); } catch (e) {}
+      d.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (t) d.dataset.themeLocked = '1';
+      if (m) d.dataset.mode = m;
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!--
+    EDITING COPY: every line of text lives in this file.
+    Story mode words sit in class="v-story", tech mode words in class="v-tech".
+    Change either one; the toggle in the nav swaps them. Text with no v-* class shows in both modes.
+  -->
+
+  <nav class="nav" id="nav" aria-label="main">
+    <div class="wrap nav-inner">
+      <a href="#top" class="brand" aria-label="kitchen, back to top">
+        <span class="brand-mark" aria-hidden="true">&gt;_</span>
+        <span class="brand-word">kitchen</span>
+      </a>
+      <div class="nav-links">
+        <a href="#menu">~/menu</a>
+        <a href="#recipe">./how-it-works</a>
+        <a href="#chefs-table">./for-teams</a>
+      </div>
+      <div class="nav-toggles">
+        <button class="pill" id="theme-toggle" type="button"><span class="theme-word">theme: <span data-theme-name>light</span> </span><span aria-hidden="true">◐</span></button>
+        <div class="pill seg" role="group" aria-label="story or tech words">
+          <button type="button" data-mode-btn="story" aria-pressed="true">story</button>
+          <button type="button" data-mode-btn="tech" aria-pressed="false">tech</button>
+        </div>
+      </div>
+    </div>
+    <!-- course strip: shows once you scroll past the hero, highlights where you are -->
+    <div class="courses">
+      <div class="wrap courses-inner" aria-label="jump to a course">
+        <a href="#problem" data-course>starters</a>
+        <a href="#recipe" data-course>mains</a>
+        <a href="#menu" data-course>specials</a>
+        <a href="#table" data-course>guests</a>
+        <a href="#house-rules" data-course>house rules</a>
+        <a href="#reserve" data-course>dessert: reserve a table</a>
+        <a href="#chefs-table" data-course>chef's table</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- 1. HERO -->
+    <header class="hero sky" id="top" data-night>
+      <div class="night" aria-hidden="true" data-stars="26" data-stars-from="52">
+        <svg class="moon" viewBox="0 0 80 80"><circle class="lit" cx="40" cy="40" r="34"/><circle class="bite" cx="55" cy="30" r="30"/></svg>
+      </div>
+
+      <div class="wrap hero-inner">
+        <div class="hero-copy">
+          <p class="label">// local-first apps · mac · private beta</p>
+          <h1>
+            <span class="v-story">pick an app.<br><em>we'll do the cooking.</em><span class="cursor" aria-hidden="true"></span></span>
+            <span class="v-tech">run any repo locally.<br><em>zero deploy scripts.</em><span class="cursor" aria-hidden="true"></span></span>
+          </h1>
+          <p class="body-lg v-story">Kitchen turns open-source software into apps that run on your own laptop. No setup. No terminal. Your data stays home.</p>
+          <p class="body-lg v-tech">GitHub URL in, running app out. Env vars, databases and API keys handled. Local-first, Mac today.</p>
+          <form class="waitlist hero-form" name="waitlist" method="POST" data-waitlist="hero" novalidate>
+            <input type="hidden" name="form-name" value="waitlist">
+            <input type="hidden" name="source" value="hero">
+            <p class="sr-only"><label>leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+            <label class="sr-only" for="hero-email">your work email</label>
+            <div class="input-row">
+              <input id="hero-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com_">
+              <button class="btn" type="submit"><span class="prompt">$</span> join the waitlist</button>
+            </div>
+            <p class="waitlist-msg" role="status" aria-live="polite"></p>
+          </form>
+          <p class="hero-demo"><a class="link" href="#chefs-table" data-demo="hero">or book a demo for your team →</a></p>
+        </div>
+        <figure class="art hero-art">
+          <canvas class="binary" data-art="mug" role="img" aria-label="a steaming coffee mug made of binary digits"></canvas>
+          <figcaption class="art-label" aria-hidden="true">brewing…</figcaption>
+        </figure>
+      </div>
+
+      <div class="landscape" data-landscape></div>
+      <div class="statusbar" aria-hidden="true">
+        <span><span class="mode-chip">NORMAL</span> kitchen ~ main</span>
+        <span class="hide-sm"><span data-status-chip>brewing…</span> 3 apps on the stove</span>
+        <span>offline ✓ <span class="hide-sm">· 0 MB sent to cloud · <span data-theme-name>light</span></span></span>
+      </div>
+    </header>
+
+    <!-- 2. THE PROBLEM -->
+    <section class="section center" id="problem">
+      <div class="wrap narrow">
+        <p class="label">// cat README.md</p>
+        <h2 class="v-story">the best software on the internet is free. <em>using it takes a developer and an afternoon.</em></h2>
+        <h2 class="v-tech">readme archaeology. dependency hell. <em>a missing .env.</em></h2>
+<pre class="readme" aria-label="a typical installation guide, abandoned at step 4"><span class="dim">## installation</span>
+1. install python 3.11 <span class="dim">(not 3.12)</span>
+2. set up postgres
+3. copy .env.example to .env, fill in 14 keys
+4. <s>it should just work</s> <span class="dim">¯\_(ツ)_/¯</span></pre>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true">/* ··············· end of problem ··············· */</div>
+
+    <!-- 3. HOW IT WORKS -->
+    <section class="section" id="recipe">
+      <div class="wrap">
+        <div class="center">
+          <p class="label">// 01 the recipe</p>
+          <h2 class="v-story">pick a dish. <em>we prep it. dinner's ready.</em></h2>
+          <h2 class="v-tech">catalog or url. <em>provisioned. running.</em></h2>
+        </div>
+
+        <div class="steps">
+          <article class="step">
+            <figure class="art">
+              <canvas class="binary" data-art="bowl" role="img" aria-label="a bowl of fruit made of binary digits"></canvas>
+            </figure>
+            <span class="step-no">// 01 pick</span>
+            <h3 class="v-story">pick a dish.</h3>
+            <h3 class="v-tech">catalog or url.</h3>
+            <p class="v-story">Choose an app from our menu, or paste a link to any open-source project.</p>
+            <p class="v-tech">Pick from the catalog or paste any GitHub repo. Kitchen reads it and works out the stack.</p>
+          </article>
+          <article class="step">
+            <figure class="art">
+              <canvas class="binary" data-art="board" role="img" aria-label="a knife and a chopping board made of binary digits"></canvas>
+            </figure>
+            <span class="step-no">// 02 prep</span>
+            <h3 class="v-story">we prep it.</h3>
+            <h3 class="v-tech">auto-provisioning.</h3>
+            <p class="v-story">Kitchen sets up everything the app needs: databases, passwords, connections to tools like OpenAI. You don't see any of it.</p>
+            <p class="v-tech">Runtimes, dependencies, env vars, local databases and API keys, handled. No deploy scripts.</p>
+          </article>
+          <article class="step">
+            <figure class="art">
+              <canvas class="binary" data-art="plate" role="img" aria-label="a plated dish with cutlery made of binary digits"></canvas>
+            </figure>
+            <span class="step-no">// 03 serve</span>
+            <h3 class="v-story">dinner's ready.</h3>
+            <h3 class="v-tech">run + share.</h3>
+            <p class="v-story">The app opens on your laptop, ready to use. Share it with your team in one click.</p>
+            <p class="v-tech">Runs in a local sandbox on localhost. One-click share sends the full setup, not a list of instructions.</p>
+          </article>
+        </div>
+
+<pre class="terminal v-tech" aria-label="example terminal session"><span class="dim">$</span> kitchen cook github.com/you/app
+<span class="dim">→ soaking dependencies…</span>
+<span class="dim">→ frying database…</span>
+<span class="dim">→ seasoning .env (3 keys)…</span>
+<span class="ok">✓ served on localhost:3000</span></pre>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true">/* ··············· end of recipe ··············· */</div>
+
+    <!-- 4. ON THE MENU -->
+    <section class="section" id="menu">
+      <div class="wrap">
+        <div class="menu-head">
+          <div>
+            <p class="label">// 02 on the menu</p>
+            <h2 class="v-story">things you can <em>run today.</em></h2>
+            <h2 class="v-tech">today's <em>catalog.</em></h2>
+          </div>
+          <p class="body-lg v-story">A few favourites from the menu. Or bring your own recipe: any open-source project works.</p>
+          <p class="body-lg v-tech">Curated apps, pre-tested on macOS. Or paste any public repo.</p>
+        </div>
+
+        <!-- Example apps: swap for the real launch catalog. -->
+        <div class="cards">
+          <article class="card">
+            <div class="card-top"><span class="v-story">// writing</span><span class="v-tech">notes-ai</span><span class="v-tech">~120 MB · python</span></div>
+            <h3>a private note taker</h3>
+            <p>Summarizes your docs. Never leaves your laptop.</p>
+          </article>
+          <article class="card">
+            <div class="card-top"><span class="v-story">// documents</span><span class="v-tech">ask-your-pdfs</span><span class="v-tech">~340 MB · python · pgvector</span></div>
+            <h3>chat with your contracts</h3>
+            <p>Ask questions across a whole folder of PDFs.</p>
+          </article>
+          <article class="card">
+            <div class="card-top"><span class="v-story">// finance</span><span class="v-tech">ledger-lite</span><span class="v-tech">~210 MB · node · postgres</span></div>
+            <h3>books and invoices</h3>
+            <p>Track invoices and expenses for a small business.</p>
+          </article>
+          <article class="card">
+            <div class="card-top"><span class="v-story">// meetings</span><span class="v-tech">whisper-desk</span><span class="v-tech">~600 MB · whisper.cpp</span></div>
+            <h3>a meeting transcriber</h3>
+            <p>Turns recordings into searchable notes, offline.</p>
+          </article>
+          <article class="card">
+            <div class="card-top"><span class="v-story">// team</span><span class="v-tech">team-wiki</span><span class="v-tech">~280 MB · node · redis</span></div>
+            <h3>a team wiki</h3>
+            <p>One shared home for how your team works.</p>
+          </article>
+          <article class="card">
+            <div class="card-top"><span class="v-story">// bring your own</span><span class="v-tech">github.com/you/app</span><span class="v-tech">any stack</span></div>
+            <h3>anything on GitHub</h3>
+            <p>Paste a link. We'll read the recipe.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- MID-PAGE BREAK: same table -->
+    <section class="sky break center" data-night aria-label="the big idea">
+      <div class="night" aria-hidden="true" data-stars="26"></div>
+      <div class="wrap">
+        <p class="label" style="color:inherit;opacity:.75">// same table</p>
+        <h2 class="v-story">software that used to need a server room <em>now sits next to the fruit bowl.</em></h2>
+        <h2 class="v-tech">a server room's worth of setup, <em>on localhost.</em></h2>
+      </div>
+      <div class="landscape" data-landscape></div>
+    </section>
+
+    <!-- 5. WHO'S AT THE TABLE -->
+    <section class="section" id="table">
+      <div class="wrap">
+        <div class="center">
+          <p class="label">// 03 who's at the table</p>
+          <h2 class="v-story">useful software, <em>minus the tech headache.</em></h2>
+          <h2 class="v-tech">use cases, <em>by seat.</em></h2>
+        </div>
+        <figure class="art table-art">
+          <canvas class="binary" data-art="table" role="img" aria-label="a long table with four plates, seen from above, made of binary digits"></canvas>
+        </figure>
+        <div class="seats">
+          <div class="seat">
+            <span class="step-no">seat 01</span>
+            <h3>the lawyer.</h3>
+            <p class="v-story">Reviews contracts with AI, and client files never leave the laptop.</p>
+            <p class="v-tech">Offline sandbox for privileged documents. Nothing hits a third-party server.</p>
+          </div>
+          <div class="seat">
+            <span class="step-no">seat 02</span>
+            <h3>the finance team.</h3>
+            <p class="v-story">Runs the tool the analyst found on GitHub, without filing an IT ticket.</p>
+            <p class="v-tech">Internal tools without a deploy pipeline, a VPC or a cloud budget.</p>
+          </div>
+          <div class="seat">
+            <span class="step-no">seat 03</span>
+            <h3>the ops lead.</h3>
+            <p class="v-story">Sets up one useful app, then shares it with the whole team in one click.</p>
+            <p class="v-tech">Share the full setup: config, env and data model, reproducible on every Mac.</p>
+          </div>
+          <div class="seat">
+            <span class="step-no">seat 04</span>
+            <h3>the builder.</h3>
+            <p class="v-story">Ships a project people can actually open, not a README they give up on.</p>
+            <p class="v-tech">Distribute builds to non-technical users. No "works on my machine".</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider" aria-hidden="true">/* ··············· end of seating ··············· */</div>
+
+    <!-- 6. HOUSE RULES (privacy) -->
+    <section class="section" id="house-rules">
+      <div class="wrap split reverse-mobile">
+        <div>
+          <p class="label">// 04 house rules</p>
+          <h2 class="v-story">home cooking. <em>your data stays home.</em></h2>
+          <h2 class="v-tech">local-first. <em>offline by default.</em></h2>
+          <p class="body-lg v-story" style="margin-top:24px">Runs on your laptop. Works offline. Nothing gets uploaded.</p>
+          <p class="body-lg v-tech" style="margin-top:24px">Apps run in a local, offline sandbox. No telemetry on your data. Secrets stay on your machine.</p>
+<pre class="receipt" aria-label="receipt: data sent to cloud, 0 megabytes">KITCHEN · TABLE 4
+--------------------------------
+apps served .............. 3
+files uploaded ........... 0
+data sent to cloud ....... 0 MB
+--------------------------------
+thank you. come again.</pre>
+        </div>
+        <figure class="art">
+          <canvas class="binary" data-art="jar" role="img" aria-label="a jar with a locked lid made of binary digits"></canvas>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 7. RESERVE A TABLE (waitlist) + CHEF'S TABLE (teams) -->
+    <section class="section" id="reserve">
+      <div class="wrap split">
+        <div>
+          <p class="label">// 05 reserve a table</p>
+          <h2 class="v-story">save your seat. <em>we'll ring the dinner bell.</em></h2>
+          <h2 class="v-tech">get early access. <em>mac first.</em></h2>
+          <!-- Netlify Forms picks this up at deploy; submissions show under Forms → waitlist -->
+          <form class="waitlist" name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-waitlist="reserve" novalidate>
+            <input type="hidden" name="form-name" value="waitlist">
+            <input type="hidden" name="source" value="reserve">
+            <p class="sr-only"><label>leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+            <label class="sr-only" for="email">your work email</label>
+            <div class="input-row">
+              <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@company.com_">
+              <button class="btn" type="submit">⏎ reserve</button>
+            </div>
+            <p class="waitlist-msg" role="status" aria-live="polite"></p>
+          </form>
+          <p class="fine">// no spam. one email when your table's ready.</p>
+
+          <aside class="chef-card" id="chefs-table">
+            <p class="label">// 06 chef's table</p>
+            <h3 class="v-story">rolling out to a team? <em>we'll cook with you.</em></h3>
+            <h3 class="v-tech">design partners <em>and enterprise packs.</em></h3>
+            <p class="v-story">We're working closely with a few teams in legal, finance and banking. Bring the apps you want. We'll bring the kitchen.</p>
+            <p class="v-tech">A private menu of approved apps for your org, shared setups across the team, and a direct line to the people building Kitchen.</p>
+            <a class="link" href="#chefs-table" data-demo="chefs-table">book a demo →</a>
+          </aside>
+        </div>
+        <figure class="art">
+          <canvas class="binary" data-art="bell" role="img" aria-label="a dinner bell made of binary digits"></canvas>
+          <figcaption class="art-label" aria-hidden="true">brewing…</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- the "what do you do?" answer after signup; hidden, Netlify only needs to see it at deploy -->
+    <form name="waitlist-role" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input name="email"><input name="role"><input name="bot-field">
+    </form>
+  </main>
+
+  <!-- FOOTER: the full printed landscape -->
+  <footer class="sky footer" data-night>
+    <div class="night" aria-hidden="true" data-stars="30"></div>
+    <div class="wrap footer-top">
+      <div>
+        <span class="brand-word">kitchen</span>
+        <p class="footer-tag">made with love and a little too much garlic.</p>
+      </div>
+      <nav class="footer-links" aria-label="footer">
+        <a href="#menu">~/menu</a>
+        <a href="#reserve">./waitlist</a>
+        <a href="#recipe">./how-it-works</a>
+        <a href="#house-rules">./house-rules</a>
+        <a href="#chefs-table">./for-teams</a>
+        <a href="#chefs-table" data-demo="footer">./book-a-demo</a>
+      </nav>
+    </div>
+    <div class="landscape" data-landscape></div>
+    <div class="statusbar">
+      <span><span class="mode-chip" aria-hidden="true">NORMAL</span> © <span data-year>2026</span> kitchen</span>
+      <span class="hide-sm" aria-hidden="true"><span data-status-chip>brewing…</span> 3 apps on the stove</span>
+      <span aria-hidden="true">:wq</span>
+    </div>
+  </footer>
+
+  <!-- printed landscape, cloned into every [data-landscape] -->
+  <template id="landscape-tpl">
+    <svg viewBox="0 0 1440 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="ls-rough" x="-5%" y="-15%" width="110%" height="130%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="2" seed="4"/>
+          <feDisplacementMap in="SourceGraphic" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <filter id="ls-leaf" x="-10%" y="-15%" width="120%" height="130%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.11" numOctaves="2" seed="9"/>
+          <feDisplacementMap in="SourceGraphic" scale="13" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+      <g class="ls-cloud" filter="url(#ls-rough)">
+        <path d="M0,196 C60,176 110,124 180,132 C220,96 290,90 330,122 C360,104 410,108 428,134 C470,130 500,152 498,176 C560,170 620,190 660,204 C720,200 770,174 830,180 C860,134 930,108 1000,126 C1040,90 1120,88 1170,122 C1220,112 1270,132 1300,164 C1360,154 1410,172 1440,176 L1440,380 L0,380 Z"/>
+        <path d="M470,96 C520,84 600,88 640,96 C600,103 520,104 470,96 Z"/>
+        <path d="M690,146 C760,132 860,134 910,146 C860,154 760,156 690,146 Z"/>
+        <path d="M1010,70 C1030,46 1062,36 1092,40 C1072,50 1042,62 1010,70 Z"/>
+        <path d="M110,74 C150,64 200,64 240,74 C200,81 150,82 110,74 Z"/>
+      </g>
+      <g class="ls-tree">
+        <rect x="296" y="214" width="9" height="166"/>
+        <path d="M300,250 L276,226 L279,223 L301,244 Z"/>
+        <path d="M301,236 L326,214 L329,217 L303,242 Z"/>
+        <g filter="url(#ls-leaf)">
+          <circle cx="300" cy="176" r="44"/><circle cx="262" cy="196" r="28"/><circle cx="340" cy="198" r="30"/>
+          <circle cx="278" cy="144" r="30"/><circle cx="326" cy="142" r="28"/><circle cx="302" cy="118" r="24"/>
+          <circle cx="250" cy="164" r="22"/><circle cx="354" cy="168" r="23"/><circle cx="300" cy="212" r="22"/>
+        </g>
+      </g>
+      <text class="ls-brace" x="266" y="172">{</text>
+      <text class="ls-brace" x="324" y="196">}</text>
+      <text class="ls-brace" x="300" y="136" style="font-size:15px">;</text>
+      <g class="ls-bush" filter="url(#ls-leaf)">
+        <path d="M760,380 C770,346 790,340 805,348 C815,326 840,322 855,334 C870,316 900,314 915,330 C935,310 965,308 985,322 C1005,304 1040,300 1060,316 C1085,296 1120,296 1140,310 C1165,292 1200,290 1220,304 C1250,286 1290,286 1310,300 C1340,282 1380,280 1400,294 C1420,288 1435,290 1440,292 L1440,380 Z"/>
+        <path d="M40,380 C44,356 62,352 74,362 C84,348 104,350 110,364 C118,356 130,358 134,370 L136,380 Z"/>
+        <path d="M326,380 C332,360 348,356 358,366 C368,354 386,356 392,372 L394,380 Z"/>
+      </g>
+    </svg>
+    <div class="field" aria-hidden="true"></div>
+  </template>
+
+  <script src="js/main.js" defer></script>
+  <script src="js/binary-art.js" defer></script>
+</body>
+</html>

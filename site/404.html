@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-mode="story">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dish not found · kitchen</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script>
+    (function () {
+      var d = document.documentElement, t;
+      try { t = localStorage.getItem('kitchen-theme'); } catch (e) {}
+      d.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (t) d.dataset.themeLocked = '1';
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <nav class="nav solid" id="nav" aria-label="main">
+    <div class="wrap nav-inner">
+      <a href="/" class="brand" aria-label="kitchen home">
+        <span class="brand-mark" aria-hidden="true">&gt;_</span>
+        <span class="brand-word">kitchen</span>
+      </a>
+      <div class="nav-toggles">
+        <button class="pill" id="theme-toggle" type="button"><span class="theme-word">theme: <span data-theme-name>light</span> </span><span aria-hidden="true">◐</span></button>
+      </div>
+    </div>
+  </nav>
+  <main class="lost">
+    <div>
+      <figure class="art">
+        <canvas class="binary" data-art="emptyPlate" role="img" aria-label="an empty plate with a few crumbs, made of binary digits"></canvas>
+      </figure>
+      <p class="label">// error 404</p>
+      <h1 style="font-size:clamp(44px,7vw,88px)">dish not found.</h1>
+      <p style="margin-top:28px"><a class="link" href="/#menu">back to ~/menu →</a></p>
+    </div>
+  </main>
+  <script src="/js/main.js" defer></script>
+  <script src="/js/binary-art.js" defer></script>
+</body>
+</html>
