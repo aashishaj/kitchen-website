@@ -12,10 +12,15 @@
   // how strongly each colour shows; quieter colours read as "fill", louder ones as "edges"
   var STRENGTH = { ink: 0.92, tomato: 0.95, carrot: 0.9, leaf: 0.92, pasta: 0.95, pot: 0.9, cream: 0.7, steam: 0.75, mark: 1 };
   var palette = {};
+  var fieldScale = 1, lift = 0;
+  // phones with few cores or Data Saver on get a calmer frame rate and a still background
+  var lowPower = !!(navigator.connection && navigator.connection.saveData) || (navigator.hardwareConcurrency || 8) <= 4;
 
   function readPalette() {
     var cs = getComputedStyle(document.documentElement);
     TOKENS.forEach(function (k) { palette[k] = cs.getPropertyValue('--art-' + k).trim() || '#888'; });
+    fieldScale = parseFloat(cs.getPropertyValue('--art-field-scale')) || 1;
+    lift = parseFloat(cs.getPropertyValue('--art-lift')) || 0;
   }
 
   /* ---------- geometry helpers (all coordinates are 0..1 inside the art square) ---------- */
@@ -60,6 +65,16 @@
     if (v > 0.15) return 'pasta';
     if (v > -0.25) return h > 0.6 ? 'carrot' : 'pasta';
     return 'cream';
+  }
+
+  function pizzaPie(x, y, cx, cy, h) {
+    var dx = x - cx, dy = y - cy, r = Math.sqrt(dx * dx + dy * dy);
+    if (r > 0.4) return null;
+    if (r > 0.34) return 'carrot';
+    var pep = [[0.33, 0.38], [0.52, 0.32], [0.3, 0.62], [0.47, 0.72], [0.62, 0.6], [0.44, 0.5], [0.66, 0.42]];
+    for (var i = 0; i < pep.length; i++) if (ell(x, y, pep[i][0], pep[i][1], 0.05, 0.05) <= 1) return 'tomato';
+    if (ell(x, y, 0.4, 0.3, 0.032, 0.016) <= 1 || ell(x, y, 0.56, 0.7, 0.032, 0.016) <= 1 || ell(x, y, 0.26, 0.5, 0.016, 0.032) <= 1) return 'leaf';
+    return h > 0.85 ? 'cream' : 'pasta';
   }
 
   var scenes = {
@@ -204,6 +219,98 @@
       return null;
     },
 
+    pizza: function (x, y, t, h) {
+      // a whole pie with one slice pulled out to the right
+      var cx = 0.45, cy = 0.52, half = 0.42;
+      var qx = x - 0.08, qy = y + 0.01; // where this point sits on the pulled-out slice
+      if (Math.abs(Math.atan2(qy - cy, qx - cx) - 0.1) < half) return pizzaPie(qx, qy, cx, cy, h);
+      if (Math.abs(Math.atan2(y - cy, x - cx) - 0.1) < half) return null; // the gap it left behind
+      return pizzaPie(x, y, cx, cy, h);
+    },
+
+    sushi: function (x, y, t, h) {
+      // three maki on a board, chopsticks resting on top
+      if (seg(x, y, 0.14, 0.16, 0.86, 0.3) < 0.011 || seg(x, y, 0.14, 0.22, 0.86, 0.34) < 0.011) return 'carrot';
+      var rolls = [0.21, 0.5, 0.79];
+      for (var i = 0; i < rolls.length; i++) {
+        var d = ell(x, y, rolls[i], 0.58, 0.135, 0.135);
+        if (d <= 1) {
+          if (d > 0.62) return 'ink';
+          if (ell(x, y, rolls[i] - 0.025, 0.56, 0.05, 0.05) <= 1) return 'carrot';
+          if (ell(x, y, rolls[i] + 0.035, 0.61, 0.032, 0.032) <= 1) return 'leaf';
+          return h > 0.4 ? 'cream' : 'pasta';
+        }
+      }
+      if (box(x, y, 0.08, 0.74, 0.92, 0.8)) return Math.sin(x * 120) > 0.6 ? 'carrot' : 'pasta';
+      if (box(x, y, 0.12, 0.8, 0.18, 0.86) || box(x, y, 0.82, 0.8, 0.88, 0.86)) return 'carrot';
+      return null;
+    },
+
+    coffee: function (x, y, t, h) {
+      var s = steam(x, y, t, [0.4, 0.5, 0.6], 0.06, 0.3);
+      if (s) return s;
+      if (ell(x, y, 0.47, 0.82, 0.4, 0.06) <= 1) return ell(x, y, 0.47, 0.82, 0.3, 0.035) <= 1 ? 'cream' : 'pot';
+      // handle
+      var hd = ell(x, y, 0.75, 0.53, 0.09, 0.1);
+      if (hd <= 1 && hd > 0.45 && x > 0.72) return 'pot';
+      if (y > 0.36 && y < 0.78) {
+        var half = 0.27 - (y - 0.36) * 0.12;
+        if (Math.abs(x - 0.47) < half) {
+          var top = ell(x, y, 0.47, 0.38, 0.27, 0.05);
+          if (top <= 1) {
+            // latte art: a little heart
+            var hx = (x - 0.47) / 0.07, hy = (y - 0.385) / 0.05;
+            var heart = Math.pow(hx * hx + hy * hy - 1, 3) - hx * hx * Math.pow(-hy, 3) <= 0;
+            return heart ? 'cream' : (top > 0.7 ? 'pot' : 'carrot');
+          }
+          return 'pot';
+        }
+      }
+      return null;
+    },
+
+    burger: function (x, y, t, h) {
+      var cx = 0.5;
+      // top bun with sesame seeds
+      if (y > 0.2 && y < 0.42) {
+        var d = ell(x, y, cx, 0.42, 0.36, 0.22);
+        if (d <= 1 && y < 0.42) {
+          var seeds = [[0.38, 0.3], [0.5, 0.26], [0.62, 0.31], [0.44, 0.36], [0.58, 0.37]];
+          for (var i = 0; i < seeds.length; i++) if (ell(x, y, seeds[i][0], seeds[i][1], 0.018, 0.01) <= 1) return 'cream';
+          return 'pasta';
+        }
+      }
+      if (y >= 0.42 && y < 0.47 && Math.abs(x - cx) < 0.4 + Math.sin(x * 70) * 0.015) return 'leaf';
+      if (y >= 0.47 && y < 0.51 && Math.abs(x - cx) < 0.34) return 'tomato';
+      if (y >= 0.51 && y < 0.55 && Math.abs(x - cx) < 0.37) return y < 0.53 || Math.sin(x * 40) > 0.3 ? 'pasta' : null;
+      if (y >= 0.55 && y < 0.64 && Math.abs(x - cx) < 0.36) return 'ink';
+      if (y >= 0.64 && y < 0.74 && Math.abs(x - cx) < 0.35 - Math.max(0, y - 0.7) * 1.2) return 'pasta';
+      if (box(x, y, 0.1, 0.8, 0.9, 0.83)) return 'pot';
+      return null;
+    },
+
+    chef: function (x, y, t, h) {
+      // the secret menu: a chef's hat with a few sparkles around it
+      var tw = Math.sin(t * 6 + h * 20) > 0.6;
+      var stars = [[0.16, 0.2], [0.84, 0.18], [0.1, 0.62], [0.9, 0.58]];
+      for (var i = 0; i < stars.length; i++) {
+        var sx = Math.abs(x - stars[i][0]), sy = Math.abs(y - stars[i][1]);
+        if ((sx < 0.008 && sy < 0.05) || (sy < 0.008 && sx < 0.05)) return tw ? 'mark' : 'pasta';
+      }
+      var puffs = [[0.36, 0.38, 0.15], [0.5, 0.3, 0.17], [0.64, 0.38, 0.15]];
+      var best = 9;
+      for (var k = 0; k < puffs.length; k++) best = Math.min(best, ell(x, y, puffs[k][0], puffs[k][1], puffs[k][2], puffs[k][2]));
+      var inBand = box(x, y, 0.3, 0.46, 0.7, 0.74);
+      if (best <= 1 || inBand) {
+        if (inBand) {
+          if (x < 0.32 || x > 0.68 || y > 0.72) return 'ink';
+          return Math.abs(Math.sin(x * 60)) < 0.18 ? 'steam' : 'cream';
+        }
+        return best > 0.8 ? 'ink' : 'cream';
+      }
+      return null;
+    },
+
     serve: function (x, y, t, h) {
       var plates = [[0.19, 0.2, 'leaf'], [0.81, 0.2, 'carrot'], [0.19, 0.8, 'tomato'], [0.81, 0.8, 'pasta']];
       for (var i = 0; i < plates.length; i++) {
@@ -233,7 +340,7 @@
         g.textAlign = 'center';
         g.textBaseline = 'alphabetic';
         g.fillStyle = g.strokeStyle = '#000';
-        g.lineWidth = size * 0.045; // thicken the hairlines so they survive the grid
+        g.lineWidth = size * (w < 700 ? 0.08 : 0.045); // thicken the hairlines so they survive the grid, more so on small screens
         g.lineJoin = 'round';
         g.fillText(word, mw / 2, mh * 0.5 + size * 0.3);
         g.strokeText(word, mw / 2, mh * 0.5 + size * 0.3);
@@ -268,6 +375,7 @@
     this.pointer = { x: -1e4, y: -1e4, s: 0 };
     this.onSettle = null;
     this.settled = true;
+    this.lastDraw = 0;
     this.resize();
 
     var self = this;
@@ -292,7 +400,9 @@
     this.canvas.height = Math.round(this.h * dpr);
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    var fs = this.w < 220 ? 6.5 : this.w < 420 ? Math.max(8, this.opts.font - 2) : this.opts.font;
+    // `small` asks for a finer grid on narrow screens, where a coarse one breaks letters apart
+    var fs = this.opts.small && this.w < 700 ? this.opts.small
+      : this.w < 220 ? 6.5 : this.w < 420 ? Math.max(8, this.opts.font - 2) : this.opts.font;
     this.fs = fs;
     this.cw = fs * 0.78;
     this.ch = fs * 1.18;
@@ -338,6 +448,11 @@
 
   // scene: a key from `scenes`, or an object { fn, fit, prepare }
   BinaryArt.prototype.setScene = function (scene, instant) {
+    if (this.held) { this.pending = scene; return; } // remember it for when the hold ends
+    this.applyScene(scene, instant);
+  };
+
+  BinaryArt.prototype.applyScene = function (scene, instant) {
     var next = typeof scene === 'string' ? { fn: scenes[scene] } : scene;
     var refit = (next && next.fit) !== (this.scene && this.scene.fit);
     this.prev = this.scene;
@@ -354,8 +469,9 @@
     var elapsed = t - this.switchAt;
     var prevFn = this.prev && this.prev.fn, fn = this.scene && this.scene.fn;
     var p = this.pointer, R = 64, R2 = R * R, still = reduce.matches;
-    var fieldA = this.opts.field;
+    var fieldA = this.opts.field * fieldScale;
     var last = '';
+    this.lastDraw = t;
 
     ctx.clearRect(0, 0, this.w, this.h);
     ctx.font = '500 ' + this.fs + 'px "Geist Mono", ui-monospace, monospace';
@@ -391,7 +507,7 @@
         tok = 'field';
         a = fieldA * (scramble ? 3 : 1);
       } else {
-        a = (STRENGTH[tok] || 0.85) * (0.55 + 0.45 * s);
+        a = (STRENGTH[tok] || 0.85) * (0.55 + lift + (0.45 - lift) * s);
         if (scramble) a *= 0.35 + Math.random() * 0.8;
       }
       var ch = scramble ? (Math.random() < 0.5 ? '0' : '1') : (this.digit[i] ? '1' : '0');
@@ -408,13 +524,20 @@
     }
   };
 
+  // ~30fps while a dish is morphing or under the pointer; once it has settled, the digits only drift,
+  // so it drops to ~15fps (~10 on low-power devices)
+  var IDLE = lowPower ? 0.1 : 0.066;
   function tick(now) {
     if (!arts.some(function (a) { return a.visible; })) { running = false; return; }
     requestAnimationFrame(tick);
-    if (now - lastTick < 33) return; // ~30fps is plenty for drifting digits
+    if (now - lastTick < 33) return;
     lastTick = now;
     var t = now / 1000;
-    arts.forEach(function (a) { if (a.visible) a.draw(t); });
+    arts.forEach(function (a) {
+      if (!a.visible) return;
+      var busy = !a.settled || a.pointer.s > 0;
+      if (busy || t - a.lastDraw >= IDLE) a.draw(t);
+    });
   }
 
   function wake() {
@@ -462,7 +585,7 @@
       self.wake();
     }, { passive: true });
     window.addEventListener('resize', function () { self.resize(); });
-    if (!reduce.matches) setInterval(function () { self.flicker(); }, 120);
+    if (!reduce.matches && !lowPower) setInterval(function () { self.flicker(); }, 120);
   }
 
   Field.prototype.resize = function () {
@@ -565,6 +688,24 @@
       return art;
     },
     field: function (base, glow) { field = new Field(base, glow); return field; },
+    // every picture that has started shows `scene` for `ms`, then goes back to what it was doing
+    takeover: function (scene, ms) {
+      arts.forEach(function (a) {
+        if (!a.scene || a.held) return;
+        a.restore = a.scene;
+        a.pending = null;
+        a.applyScene(scene);
+        a.held = true;
+      });
+      setTimeout(function () {
+        arts.forEach(function (a) {
+          if (!a.held) return;
+          a.held = false;
+          a.applyScene(a.pending || a.restore);
+          a.pending = a.restore = null;
+        });
+      }, ms);
+    },
     refresh: function () {
       readPalette();
       if (field) field.paint();

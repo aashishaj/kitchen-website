@@ -4,14 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Kitchen · Your next internal tool is already on GitHub</title>
-  <meta name="description" content="Kitchen turns proven open-source projects into private apps that run on your own Mac. Pick from the menu, add your data, and it's ready. No servers, no terminal.">
+  <meta name="description" content="Kitchen turns proven open-source projects into private apps that run locally on your own system. Pick from the menu, add your data, and it's ready. No servers, no terminal.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Kitchen · Your next internal tool is already on GitHub">
-  <meta property="og:description" content="Proven open-source tools, cooked into private apps on your own Mac. No servers. No terminal. Your data stays home.">
-  <meta property="og:image" content="/og.png">
+  <meta property="og:description" content="Proven open-source tools, cooked into private apps that run locally on your system. No servers. No terminal. Your data stays home.">
+  <link rel="canonical" href="https://trykitchen.ai/">
+  <meta property="og:url" content="https://trykitchen.ai/">
+  <meta property="og:site_name" content="Kitchen">
+  <meta property="og:image" content="https://trykitchen.ai/og.png">
+  <meta property="og:image:alt" content="Your next internal tool is already on GitHub, next to a bowl of pasta drawn in binary.">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://trykitchen.ai/og.png">
   <meta name="theme-color" content="#f6f4ee">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -25,10 +30,42 @@
     })();
   </script>
 
+  <!-- tells search engines what Kitchen is -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://trykitchen.ai/#org",
+        "name": "Kitchen",
+        "url": "https://trykitchen.ai/",
+        "logo": "https://trykitchen.ai/apple-touch-icon.png"
+      },
+      {
+        "@type": "WebSite",
+        "name": "Kitchen",
+        "url": "https://trykitchen.ai/",
+        "publisher": { "@id": "https://trykitchen.ai/#org" }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Kitchen",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "macOS",
+        "description": "Kitchen turns proven open-source projects into private apps that run locally on your own system. Pick from the menu, add your data, and it's ready.",
+        "publisher": { "@id": "https://trykitchen.ai/#org" }
+      }
+    ]
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=4">
+  <!-- fonts load without holding up first paint; text shows in a fallback face for a moment -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;family=Instrument+Serif:ital@0;1&amp;display=swap"></noscript>
+  <link rel="stylesheet" href="css/styles.css?v=11">
 </head>
 <body>
   <!--
@@ -71,9 +108,10 @@
     <!-- HERO -->
     <section class="hero wrap" id="top" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="eyebrow load" style="--d:0"><span class="dot"></span>Mac app · private beta · taking design partners</p>
+        <p class="eyebrow load" style="--d:0"><span class="dot"></span>Pre-launch · runs locally · taking design partners</p>
         <h1 class="display" id="hero-title" data-split>Your next internal tool is already <em>on GitHub.</em></h1>
-        <p class="lede load" style="--d:6">There's a free, open-source version of almost every tool your team pays for. Kitchen turns it into a real app on your Mac. Pick one from the menu, add your data, and you're done. No servers to rent. No terminal. No developer on call.</p>
+        <p class="lede load" style="--d:6">There's a free, open-source version of almost every tool your team pays for. Kitchen turns it into a real app that runs locally on your system. Pick one from the menu, add your data, and you're done. No servers to rent. No terminal. No developer on call.</p>
+        <p class="for load" style="--d:6"><span class="mono">Made for</span> ops, sales, finance and marketing teams who'd rather not wait on IT, or pay per seat for the basics.</p>
         <div class="actions load" style="--d:7">
           <a class="btn btn-ink" href="#join" data-choice-link="waitlist">Get early access</a>
           <a class="btn btn-ghost" href="#join" data-choice-link="partner">Become a design partner <span class="arrow" aria-hidden="true">→</span></a>
@@ -104,30 +142,30 @@
       </figure>
     </section>
 
-    <!-- MENU STRIP -->
-    <div class="strip" aria-label="A few things on the menu">
+    <!-- MENU STRIP: click an app and the hero cooks its dish -->
+    <div class="strip" role="region" aria-label="Pick an app to see it cooked">
       <div class="strip-track">
         <ul class="strip-list">
-          <li><b>Twenty</b> sales CRM</li>
-          <li><b>Outline</b> team wiki</li>
-          <li><b>Plane</b> project planning</li>
-          <li><b>Documenso</b> contract signing</li>
-          <li><b>Listmonk</b> newsletters</li>
-          <li><b>Appsmith</b> internal dashboards</li>
-          <li><b>ToolJet</b> admin panels</li>
-          <li><b>EspoCRM</b> customer records</li>
-          <li><b>+ any GitHub link</b> you paste in</li>
+          <li><button type="button" data-dish="twenty"><b>Twenty</b> sales CRM</button></li>
+          <li><button type="button" data-dish="outline"><b>Outline</b> team wiki</button></li>
+          <li><button type="button" data-dish="plane"><b>Plane</b> project planning</button></li>
+          <li><button type="button" data-dish="documenso"><b>Documenso</b> contract signing</button></li>
+          <li><button type="button" data-dish="listmonk"><b>Listmonk</b> newsletters</button></li>
+          <li><button type="button" data-dish="appsmith"><b>Appsmith</b> internal dashboards</button></li>
+          <li><button type="button" data-dish="tooljet"><b>ToolJet</b> admin panels</button></li>
+          <li><button type="button" data-dish="espocrm"><b>EspoCRM</b> customer records</button></li>
+          <li><a href="#off-menu"><b>+ any GitHub link</b> you paste in</a></li>
         </ul>
         <ul class="strip-list" aria-hidden="true">
-          <li><b>Twenty</b> sales CRM</li>
-          <li><b>Outline</b> team wiki</li>
-          <li><b>Plane</b> project planning</li>
-          <li><b>Documenso</b> contract signing</li>
-          <li><b>Listmonk</b> newsletters</li>
-          <li><b>Appsmith</b> internal dashboards</li>
-          <li><b>ToolJet</b> admin panels</li>
-          <li><b>EspoCRM</b> customer records</li>
-          <li><b>+ any GitHub link</b> you paste in</li>
+          <li><button type="button" data-dish="twenty" tabindex="-1"><b>Twenty</b> sales CRM</button></li>
+          <li><button type="button" data-dish="outline" tabindex="-1"><b>Outline</b> team wiki</button></li>
+          <li><button type="button" data-dish="plane" tabindex="-1"><b>Plane</b> project planning</button></li>
+          <li><button type="button" data-dish="documenso" tabindex="-1"><b>Documenso</b> contract signing</button></li>
+          <li><button type="button" data-dish="listmonk" tabindex="-1"><b>Listmonk</b> newsletters</button></li>
+          <li><button type="button" data-dish="appsmith" tabindex="-1"><b>Appsmith</b> internal dashboards</button></li>
+          <li><button type="button" data-dish="tooljet" tabindex="-1"><b>ToolJet</b> admin panels</button></li>
+          <li><button type="button" data-dish="espocrm" tabindex="-1"><b>EspoCRM</b> customer records</button></li>
+          <li><a href="#off-menu" tabindex="-1"><b>+ any GitHub link</b> you paste in</a></li>
         </ul>
       </div>
     </div>
@@ -135,7 +173,7 @@
     <!-- THE CATCH -->
     <section class="catch wrap" aria-labelledby="catch-title">
       <p class="eyebrow reveal" id="catch-title"><span class="dot"></span>The catch</p>
-      <p class="catch-text" data-scrub>The best tools for your team are already free. They're sitting on GitHub, built and looked after by thousands of good people. The hard part is getting one running: a README written for engineers, a terminal, two databases and a developer's whole afternoon. So most teams sigh, and pay for one more subscription.</p>
+      <p class="catch-text" data-scrub>The best tools for your team are already free. They're sitting on GitHub, built and looked after by communities of good people. The hard part is getting one running: a README written for engineers, a terminal, two databases and a developer's whole afternoon. So most teams sigh, and pay for one more subscription.</p>
       <p class="catch-after reveal">Kitchen is that afternoon, done for you.</p>
     </section>
 
@@ -145,7 +183,7 @@
         <header class="section-head">
           <div>
             <p class="eyebrow reveal"><span class="dot"></span>The recipe</p>
-            <h2 class="display reveal" id="recipe-title">From a GitHub link to an app on your dock, <em>in five steps.</em></h2>
+            <h2 class="display reveal" id="recipe-title">From a GitHub link to an app on your own system, <em>in five steps.</em></h2>
           </div>
           <p class="reveal">Let's cook a real one. A twelve-person sales team needs a CRM, and their customer list isn't allowed to leave the office.</p>
         </header>
@@ -216,7 +254,7 @@
                     <li class="row file" style="--i:1"><span><b>deals-2026.xlsx</b> 418 rows</span><span class="fill"><i></i></span></li>
                     <li class="row file" style="--i:2"><span><b>OpenAI key</b> <span class="mono">••••••••••••</span></span><span class="fill"><i></i></span></li>
                   </ul>
-                  <p class="mono muted small">database → Postgres, on this Mac</p>
+                  <p class="mono muted small">database → Postgres, on this system</p>
                 </div>
               </div>
             </li>
@@ -225,7 +263,7 @@
             <li class="step" data-scene="pot" data-dish="On the stove">
               <span class="mono step-count">04</span>
               <h3 class="display">Kitchen does the cooking.</h3>
-              <p>We set up the database, fill in the settings and wire the pieces together. You can go make a cup of tea. It all happens on your Mac, and it works offline.</p>
+              <p>We set up the database, fill in the settings and wire the pieces together. You can go make a cup of tea. It all runs locally on your system, and it works offline.</p>
               <p class="in-kitchen"><span class="tag">In Kitchen</span>The setup a developer would do, done for you.</p>
               <div class="window">
                 <div class="window-bar"><span class="lights"><i></i><i></i><i></i></span><span>Kitchen · cooking Twenty</span></div>
@@ -246,10 +284,10 @@
             <li class="step" data-scene="serve" data-dish="Dinner's ready">
               <span class="mono step-count">05</span>
               <h3 class="display">Serve the table.</h3>
-              <p>Open it like any other app on your Mac. When you're happy, share it with your team in one click. Nobody on the team needs to know what Postgres is either.</p>
+              <p>Open it like any other app on your computer. When you're happy, share it with your team in one click. Nobody on the team needs to know what Postgres is either.</p>
               <p class="in-kitchen"><span class="tag">In Kitchen</span>A real app your whole team can use, today.</p>
               <div class="window">
-                <div class="window-bar"><span class="lights"><i></i><i></i><i></i></span><span>Twenty · running on this Mac</span></div>
+                <div class="window-bar"><span class="lights"><i></i><i></i><i></i></span><span>Twenty · running locally · sample data</span></div>
                 <div class="window-body">
                   <ul class="rows">
                     <li class="row" style="--i:0"><span><i class="pip"></i><b>Northwind Co.</b></span><span class="muted">proposal sent</span></li>
@@ -278,7 +316,7 @@
           <p class="eyebrow reveal"><span class="dot"></span>Why Kitchen</p>
           <h2 class="display reveal" id="why-title">Fast food is fast. <em>A recipe lasts.</em></h2>
         </div>
-        <p class="reveal">You could ask an AI to write you a CRM from scratch. You'd have something by lunch. You'd also be the only team on earth using it. Kitchen starts you from software that thousands of teams already run every day.</p>
+        <p class="reveal">You could ask an AI to write you a CRM from scratch. You'd have something by lunch. You'd also be the only team on earth using it. Kitchen starts you from software other teams already run every day.</p>
       </header>
 
       <div class="compare reveal" role="table" aria-label="A vibe-coded app compared with an app cooked in Kitchen">
@@ -295,7 +333,7 @@
         <div class="compare-row" role="row" style="--i:1">
           <span role="rowheader">Tested by</span>
           <span role="cell">Nobody yet</span>
-          <span role="cell">Its community first, then us</span>
+          <span role="cell">Its community, plus our review for the menu</span>
         </div>
         <div class="compare-row" role="row" style="--i:2">
           <span role="rowheader">Your data lives</span>
@@ -305,13 +343,32 @@
         <div class="compare-row" role="row" style="--i:3">
           <span role="rowheader">When it breaks</span>
           <span role="cell">You re-prompt and hope</span>
-          <span role="cell">Real docs and years of fixes</span>
+          <span role="cell">A known project with docs and a history of fixes</span>
         </div>
-        <div class="compare-row" role="row" style="--i:4">
-          <span role="rowheader">A year from now</span>
-          <span role="cell">Code nobody remembers writing</span>
-          <span role="cell">Still looked after by the people who made it</span>
+      </div>
+    </section>
+
+    <!-- OFF THE MENU: any GitHub link, cooked -->
+    <section class="offmenu wrap" id="off-menu" aria-labelledby="offmenu-title">
+      <div class="offmenu-copy">
+        <p class="eyebrow reveal"><span class="dot"></span>Off the menu</p>
+        <h2 class="display reveal" id="offmenu-title">Not on the menu? <em>Bring the recipe.</em></h2>
+        <p class="reveal">Found a project on GitHub that your team would love? Paste the link. Kitchen reads the recipe, gathers what it needs and has a go at cooking it, right on your own system.</p>
+        <p class="reveal">No asking anyone to put it on the menu first. If it's open source, it's fair game.</p>
+      </div>
+
+      <div class="om-window reveal" id="om" aria-hidden="true">
+        <div class="window-bar"><span class="lights"><i></i><i></i><i></i></span><span>Kitchen · off the menu</span></div>
+        <div class="om-paste">
+          <span class="mono om-url"><span class="muted">github.com/</span><span id="om-repo"></span><span class="caret"></span></span>
+          <span class="om-cook mono" id="om-cook">cook ↵</span>
         </div>
+        <div class="om-stage"><canvas id="om-art"></canvas></div>
+        <ul class="om-log mono" id="om-log">
+          <li><span>reading the recipe</span><span class="ok">✓</span></li>
+          <li><span>gathering ingredients</span><span class="ok">✓</span></li>
+          <li><span>served, on this system</span><span class="ok">✓</span></li>
+        </ul>
       </div>
     </section>
 
@@ -323,13 +380,13 @@
           <h2 class="display reveal" id="home-title">Home cooking. <em>Your data stays home.</em></h2>
           <p class="reveal">Kitchen runs every app on your own machine. Your customer list, your contracts and your numbers never pass through our servers. We can't see them, because they never come to us.</p>
           <ul class="facts reveal">
-            <li><b>Runs on your Mac.</b> Not in someone else's cloud.</li>
+            <li><b>Runs locally on your system.</b> Not in someone else's cloud.</li>
             <li><b>Works offline.</b> Pull the Wi-Fi cable, it keeps going.</li>
-            <li><b>Nothing uploaded.</b> No telemetry on your data. Ever.</li>
+            <li><b>Nothing uploaded.</b> Your files go into the app, not to us.</li>
           </ul>
         </div>
-        <div class="receipt reveal" aria-label="An example receipt for a day in Kitchen">
-          <p class="mono receipt-head">kitchen · receipt<br><span class="muted">table for 12 · today</span></p>
+        <div class="receipt reveal" aria-label="An example receipt for a team using Kitchen">
+          <p class="mono receipt-head">kitchen · receipt<br><span class="muted">example · table for 12</span></p>
           <ul>
             <li><span>apps running</span><b data-count="3">0</b></li>
             <li><span>databases set up</span><b data-count="2">0</b></li>
@@ -357,25 +414,25 @@
           <span class="mono guest-tag">01 · Marketing</span>
           <h3 class="display">Move faster on real tools.</h3>
           <p>Run a private wiki, a campaign hub or your own newsletter tool, without filing a ticket and waiting three sprints.</p>
-          <p class="mono guest-cmd"><span>$</span> kitchen cook outline</p>
+          <p class="mono guest-cmd">like Outline, Listmonk</p>
         </article>
         <article class="guest reveal" style="--i:1">
           <span class="mono guest-tag">02 · Product &amp; ops</span>
           <h3 class="display">Systems that actually stick.</h3>
           <p>Feedback boards, CRMs, planning tools. Set them up for the team that uses them, and keep them close to that team.</p>
-          <p class="mono guest-cmd"><span>$</span> kitchen cook plane</p>
+          <p class="mono guest-cmd">like Twenty, Plane</p>
         </article>
         <article class="guest reveal" style="--i:2">
           <span class="mono guest-tag">03 · Finance &amp; legal</span>
           <h3 class="display">Keep sensitive work close.</h3>
-          <p>Contracts, approvals and private numbers stay on machines you control. There's an offline sandbox for the really sensitive stuff.</p>
-          <p class="mono guest-cmd"><span>$</span> kitchen cook documenso</p>
+          <p>Contracts, approvals and private numbers stay on machines you control, or in an offline sandbox when the work is really sensitive.</p>
+          <p class="mono guest-cmd">like Documenso, Appsmith</p>
         </article>
         <article class="guest reveal" style="--i:3">
           <span class="mono guest-tag">04 · Builders</span>
           <h3 class="display">Hand over something solid.</h3>
           <p>Give non-technical teammates a real tool today, and customize it later if they come back asking for more.</p>
-          <p class="mono guest-cmd"><span>$</span> kitchen cook tooljet</p>
+          <p class="mono guest-cmd">like ToolJet, or your own repo</p>
         </article>
       </div>
     </section>
@@ -418,7 +475,7 @@
         <div class="booking reveal">
           <div class="booking-copy">
             <h3 class="display">Save me a seat.</h3>
-            <p>Takes about ten seconds. We'll write back like humans, usually within a day or two.</p>
+            <p>Takes about ten seconds. We'll write back like humans, not like a mailing list.</p>
             <div class="booking-art"><canvas id="bell-art" aria-hidden="true"></canvas></div>
           </div>
 
@@ -468,7 +525,7 @@
       <div class="qa">
         <details class="reveal">
           <summary>Do I need to know how to code?</summary>
-          <div><p>Not at all. If you can install an app on your Mac, you can use Kitchen. The whole idea is that you never have to open a terminal.</p></div>
+          <div><p>Not at all. If you can install an app on your computer, you can use Kitchen. The whole idea is that you never have to open a terminal.</p></div>
         </details>
         <details class="reveal">
           <summary>Where does my data actually go?</summary>
@@ -483,8 +540,8 @@
           <div><p>Yes. Once an app is running, you can share it with your team in one click. They don't need to set anything up.</p></div>
         </details>
         <details class="reveal">
-          <summary>Is it only for Mac?</summary>
-          <div><p>For now, yes. We'd rather do one platform properly than three platforms badly.</p></div>
+          <summary>Which systems does it run on?</summary>
+          <div><p>We're starting on Mac, because we'd rather do one system properly than three badly. Tell us what your team uses when you sign up, and we'll let you know when Kitchen is ready for it.</p></div>
         </details>
         <details class="reveal">
           <summary>How much will it cost?</summary>
@@ -513,7 +570,7 @@
     </div>
   </footer>
 
-  <script src="js/binary.js?v=4" defer></script>
-  <script src="js/main.js?v=4" defer></script>
+  <script src="js/binary.js?v=11" defer></script>
+  <script src="js/main.js?v=11" defer></script>
 </body>
 </html>

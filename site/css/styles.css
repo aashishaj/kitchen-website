@@ -1,5 +1,12 @@
 /* Kitchen · warm paper, ink, one lime accent, and food made of binary. */
 
+/* Stand-ins sized to match the real fonts, so nothing moves when Google Fonts arrive.
+   Numbers measured against Instrument Serif, Geist and Geist Mono in Chrome. */
+@font-face { font-family: "Instrument Fallback"; src: local("Times New Roman"), local("TimesNewRomanPSMT"); size-adjust: 82.92%; ascent-override: 119.39%; descent-override: 37.38%; line-gap-override: 0%; }
+@font-face { font-family: "Instrument Fallback"; font-style: italic; src: local("Times New Roman Italic"), local("TimesNewRomanPS-ItalicMT"); size-adjust: 86.31%; ascent-override: 114.7%; descent-override: 35.92%; line-gap-override: 0%; }
+@font-face { font-family: "Geist Fallback"; src: local("Arial"), local("ArialMT"); size-adjust: 102.03%; ascent-override: 98.99%; descent-override: 28.42%; line-gap-override: 0%; }
+@font-face { font-family: "Geist Mono Fallback"; src: local("Courier New"), local("CourierNewPSMT"); size-adjust: 99.98%; ascent-override: 101.02%; descent-override: 29.01%; line-gap-override: 0%; }
+
 :root {
   color-scheme: light;
   --paper: #f6f4ee;
@@ -28,10 +35,14 @@
   --art-field: #191815;
   --art-mark: #86b80c;
   --field-alpha: 0.075;
+  /* light digits on a dark page read much louder than dark on paper, so dark mode quiets the
+     empty cells inside the art and makes the food colours more solid */
+  --art-field-scale: 1;
+  --art-lift: 0;
 
-  --display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
-  --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
-  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --display: "Instrument Serif", "Instrument Fallback", Georgia, serif;
+  --sans: "Geist", "Geist Fallback", Arial, sans-serif;
+  --mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, Menlo, monospace;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-h: 68px;
 }
@@ -46,7 +57,7 @@
   --line: rgba(241, 238, 230, 0.12);
   --line-strong: rgba(241, 238, 230, 0.24);
   --ok: #a6cf7a;
-  --band: #1c1c18;
+  --band: #1f1e19;
   --band-ink: #f1eee6;
   --band-muted: #a19c91;
 
@@ -57,10 +68,12 @@
   --art-pasta: #ecc65c;
   --art-pot: #7eaad0;
   --art-cream: #d9cca9;
-  --art-steam: #8f8a7f;
+  --art-steam: #b4d36a; /* steam glows faintly lime at night */
   --art-field: #f1eee6;
   --art-mark: #c6ef3a;
-  --field-alpha: 0.045;
+  --field-alpha: 0.04;
+  --art-field-scale: 0.38;
+  --art-lift: 0.22;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -230,6 +243,8 @@ ul, ol { padding: 0; list-style: none; }
 }
 .hero h1 { margin-top: 22px; font-size: clamp(54px, 7.2vw, 104px); }
 .lede { margin-top: 26px; max-width: 540px; font-size: 18.5px; line-height: 1.65; color: var(--muted); }
+.for { margin-top: 18px; max-width: 540px; font-size: 15.5px; line-height: 1.55; color: var(--ink); }
+.for .mono { display: inline-block; margin-right: 8px; padding: 2px 8px; border-radius: 999px; background: var(--mark); color: var(--mark-ink); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; vertical-align: 2px; }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
 .note { display: flex; align-items: center; gap: 10px; margin-top: 26px; font: 12.5px/1.4 var(--mono); color: var(--muted); }
 .lock { width: 10px; height: 8px; border-radius: 2px; background: var(--ink); position: relative; margin-top: 4px; flex: none; }
@@ -288,6 +303,10 @@ ul, ol { padding: 0; list-style: none; }
 .strip-list li { display: flex; align-items: center; gap: 8px; padding: 18px 28px; white-space: nowrap; font-size: 15px; color: var(--muted); }
 .strip-list li::before { content: "✳"; color: var(--art-mark); margin-right: 18px; font-size: 13px; }
 .strip-list b { color: var(--ink); font-weight: 500; }
+.strip-list button, .strip-list a { all: unset; display: inline-flex; gap: 8px; cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; transition: background-color 0.25s, color 0.25s; }
+.strip-list button:hover, .strip-list a:hover, .strip-list .is-cooking { background: var(--mark); color: var(--mark-ink); }
+.strip-list button:hover b, .strip-list a:hover b, .strip-list .is-cooking b { color: var(--mark-ink); }
+.strip-list button:focus-visible, .strip-list a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* ---------- the catch ---------- */
@@ -316,7 +335,7 @@ ul, ol { padding: 0; list-style: none; }
 .recipe-bar { height: 3px; background: var(--line); }
 .recipe-bar i { display: block; height: 100%; width: 20%; background: var(--ink); transition: width 0.8s var(--ease); }
 
-.step { padding-block: 14vh; opacity: 0.28; transition: opacity 0.6s ease; }
+.step { padding-block: 14vh; opacity: 0.65; transition: opacity 0.6s ease; }
 .step:first-child { padding-top: 2vh; }
 .step:last-child { padding-bottom: 6vh; }
 .step.is-active { opacity: 1; }
@@ -498,10 +517,7 @@ ul, ol { padding: 0; list-style: none; }
 .guest-tag { color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }
 .guest h3 { font-size: 31px; }
 .guest p:not(.mono) { color: var(--muted); font-size: 15px; line-height: 1.65; flex: 1; }
-.guest-cmd { padding-top: 14px; border-top: 1px solid var(--line); color: var(--ink); overflow: hidden; white-space: nowrap; }
-.guest-cmd span { color: var(--art-mark); margin-right: 4px; }
-.guest-cmd::after { content: "▍"; animation: blink 1s steps(1) infinite; margin-left: 2px; opacity: 0; }
-.guest:hover .guest-cmd::after { opacity: 1; }
+.guest-cmd { padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
 /* ---------- join ---------- */
 
@@ -681,3 +697,43 @@ ul, ol { padding: 0; list-style: none; }
   .catch-text .sw { opacity: 1; }
   .strip-track { animation: none; }
 }
+
+/* ?still: the finished frame, for the link-preview screenshot */
+.still *, .still *::before, .still *::after { transition: none !important; animation: none !important; }
+.still .load, .still .reveal, .still [data-split] .wi { opacity: 1 !important; transform: none !important; }
+.still .lede, .still .for, .still .actions, .still .note { display: none; }
+
+/* ---------- off the menu: a pasted link, cooked into a dish ---------- */
+.offmenu { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 72px; align-items: center; padding-block: 40px 130px; }
+.offmenu h2 { margin-top: 18px; font-size: clamp(44px, 5.6vw, 78px); }
+.offmenu-copy > p:not(.eyebrow) { margin-top: 22px; max-width: 500px; color: var(--muted); font-size: 17px; line-height: 1.7; }
+.om-window { border: 1px solid var(--line); border-radius: 18px; background: var(--paper-2); overflow: hidden; box-shadow: 0 1px 0 var(--line), 0 24px 50px -30px rgba(0, 0, 0, 0.35); }
+.om-window .lights i:nth-child(1) { background: var(--art-tomato); }
+.om-window .lights i:nth-child(2) { background: var(--art-pasta); }
+.om-window .lights i:nth-child(3) { background: var(--art-leaf); }
+.om-paste { display: flex; align-items: center; gap: 12px; margin: 16px 16px 0; padding: 10px 10px 10px 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--paper); }
+.om-url { flex: 1; min-width: 0; display: flex; align-items: center; overflow: hidden; white-space: nowrap; font-size: 13px; }
+.om-url .caret { height: 15px; margin-left: 2px; }
+.om-cook { flex: none; padding: 7px 12px; border-radius: 8px; background: var(--ink); color: var(--paper); font-size: 12px; transition: background-color 0.2s, color 0.2s, transform 0.2s; }
+.om-cook.pressed { background: var(--mark); color: var(--mark-ink); transform: scale(0.94); }
+.om-stage { position: relative; aspect-ratio: 1.35; margin: 8px 16px 0; }
+.om-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.om-log { display: grid; gap: 2px; padding: 8px 16px 16px; font-size: 12.5px; }
+.om-log li { display: flex; justify-content: space-between; padding: 6px 2px; border-bottom: 1px dashed var(--line); opacity: 0.25; transition: opacity 0.4s; }
+.om-log li span:first-child::before { content: "→ "; color: var(--muted); }
+.om-log .ok { color: var(--ok); opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.5s var(--ease); }
+.om-log li.on { opacity: 1; }
+.om-log li.done .ok { opacity: 1; transform: none; }
+@media (max-width: 860px) {
+  .offmenu { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 20px 100px; }
+}
+
+/* ---------- the secret menu toast ---------- */
+.secret-toast {
+  position: fixed; left: 50%; bottom: 28px; z-index: 60; margin: 0; padding: 12px 18px; border-radius: 999px;
+  background: var(--ink); color: var(--paper); font-size: 13px; white-space: nowrap; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis;
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.5);
+  opacity: 0; transform: translate(-50%, 20px); transition: opacity 0.35s, transform 0.5s var(--ease); pointer-events: none;
+}
+.secret-toast span { color: var(--mark); margin-right: 6px; }
+.secret-toast.show { opacity: 1; transform: translate(-50%, 0); }

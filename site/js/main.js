@@ -4,6 +4,8 @@
 
   var doc = document.documentElement;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var still = /[?&]still\b/.test(location.search); // ?still keeps the hero on one dish, for scripts/make-og.sh
+  if (still) doc.classList.add('still');
   var KB = window.KitchenBinary;
   var $ = function (s, el) { return (el || document).querySelector(s); };
   var $$ = function (s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
@@ -76,10 +78,11 @@
   var sectionIO = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
       if (!e.isIntersecting) return;
-      navLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id); });
+      navLinks.forEach(function (a) { a.classList.toggle('active', !!e.target.id && a.getAttribute('href') === '#' + e.target.id); });
     });
   }, { rootMargin: '-45% 0px -50% 0px' });
-  navLinks.forEach(function (a) { var s = $(a.getAttribute('href')); if (s) sectionIO.observe(s); });
+  // watch every section, so the highlight clears in the ones the nav doesn't list
+  $$('main > section').forEach(function (s) { sectionIO.observe(s); });
 
   /* ---------- reveal on scroll ---------- */
 
@@ -122,12 +125,18 @@
 
   /* ---------- hero: today's special, cycling dishes ---------- */
 
+  // the first four take turns on their own; the rest come out when you pick them from the menu strip
   var dishes = [
-    { scene: 'pasta', food: 'Pasta', app: 'A team wiki, from Outline' },
-    { scene: 'ramen', food: 'Ramen', app: 'A sales CRM, from Twenty' },
-    { scene: 'salad', food: 'Salad', app: 'Project planning, from Plane' },
-    { scene: 'cake', food: 'Cake', app: 'Contract signing, from Documenso' }
+    { key: 'outline', scene: 'pasta', food: 'Pasta', app: 'A team wiki, from Outline', verb: 'brewing…' },
+    { key: 'twenty', scene: 'ramen', food: 'Ramen', app: 'A sales CRM, from Twenty', verb: 'simmering…' },
+    { key: 'plane', scene: 'salad', food: 'Salad', app: 'Project planning, from Plane', verb: 'tossing…' },
+    { key: 'documenso', scene: 'cake', food: 'Cake', app: 'Contract signing, from Documenso', verb: 'baking…' },
+    { key: 'listmonk', scene: 'coffee', food: 'Coffee', app: 'Newsletters, from Listmonk', verb: 'pouring…' },
+    { key: 'appsmith', scene: 'pizza', food: 'Pizza', app: 'Internal dashboards, from Appsmith', verb: 'firing the oven…' },
+    { key: 'tooljet', scene: 'sushi', food: 'Sushi', app: 'Admin panels, from ToolJet', verb: 'rolling…' },
+    { key: 'espocrm', scene: 'burger', food: 'Burger', app: 'Customer records, from EspoCRM', verb: 'grilling…' }
   ];
+  var CYCLE = 4;
   var DWELL = 5200;
   var dishEl = $('#dish'), heroCanvas = $('#hero-art');
   if (KB && heroCanvas) {
@@ -144,12 +153,14 @@
     });
     hero.onSettle = function () { status.classList.remove('cooking'); statusText.textContent = 'served ✓'; };
 
-    function show(i, first) {
-      current = (i + dishes.length) % dishes.length;
+    function show(i, first, dwell) {
+      current = i;
       var d = dishes[current];
-      hero.setScene(d.scene);
+      hero.setScene(d.scene, still);
       status.classList.add('cooking');
-      statusText.textContent = ['brewing…', 'simmering…', 'frying…', 'plating…'][current];
+      statusText.textContent = d.verb;
+      if (still) hero.onSettle();
+      $$('.strip [data-dish]').forEach(function (b) { b.classList.toggle('is-cooking', b.dataset.dish === d.key); });
       dots.forEach(function (b, k) { b.setAttribute('aria-selected', k === current ? 'true' : 'false'); });
       if (!first) {
         foodEl.textContent = d.food;
@@ -158,15 +169,27 @@
         void nameEl.offsetWidth;
         nameEl.classList.add('swap');
       }
-      schedule(DWELL);
+      schedule(dwell || DWELL);
     }
     function schedule(ms) {
       clearTimeout(timer);
       remaining = ms;
       startedAt = performance.now();
-      if (!paused && !reduce) timer = setTimeout(function () { show(current + 1); }, ms);
+      if (!paused && !reduce && !still) timer = setTimeout(function () { show(current + 1 < CYCLE ? current + 1 : 0); }, ms);
     }
     dots.forEach(function (b, k) { b.addEventListener('click', function () { show(k); }); });
+
+    // pick a dish: an app in the menu strip sends its dish to the hero
+    $$('.strip [data-dish]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = dishes.findIndex(function (d) { return d.key === b.dataset.dish; });
+        if (k < 0) return;
+        var r = dishEl.getBoundingClientRect();
+        var inView = r.top > -r.height * 0.3 && r.bottom < window.innerHeight + r.height * 0.3;
+        if (!inView) dishEl.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+        setTimeout(function () { show(k, false, DWELL * 2); }, inView || reduce ? 0 : 450);
+      });
+    });
     dishEl.addEventListener('mouseenter', function () {
       paused = true;
       clearTimeout(timer);
@@ -230,6 +253,46 @@
     });
     var rr = steps[0].parentNode.getBoundingClientRect();
     if (rr.bottom > 0 && rr.top < window.innerHeight) setStep(best);
+  }
+
+  /* ---------- off the menu: a link gets pasted, the pot cooks it, a dish comes out ---------- */
+
+  var om = $('#om');
+  if (KB && om) {
+    var omArt = KB.create($('#om-art'), { font: 10, field: 0.07 });
+    var repoEl = $('#om-repo'), cookEl = $('#om-cook'), logRows = $$('#om-log li');
+    var REPOS = [['your-team/handmade-crm', 'burger'], ['someone-brilliant/tiny-wiki', 'sushi'], ['you/the-app-you-found', 'pizza']];
+    var omRun = 0, omVisible = false, omTimers = [];
+    var later = function (ms, fn) { omTimers.push(setTimeout(fn, ms)); };
+
+    var cookOnce = function () {
+      omTimers.forEach(clearTimeout);
+      omTimers = [];
+      var pick = REPOS[omRun++ % REPOS.length], name = pick[0];
+      omArt.setScene('plate');
+      repoEl.textContent = '';
+      logRows.forEach(function (li) { li.classList.remove('on', 'done'); });
+      if (reduce) {
+        repoEl.textContent = name;
+        logRows.forEach(function (li) { li.classList.add('on', 'done'); });
+        omArt.setScene(pick[1], true);
+        return;
+      }
+      for (var i = 1; i <= name.length; i++) (function (n) { later(500 + n * 45, function () { repoEl.textContent = name.slice(0, n); }); })(i);
+      var t = 600 + name.length * 45;
+      later(t, function () { cookEl.classList.add('pressed'); });
+      later(t + 260, function () { cookEl.classList.remove('pressed'); omArt.setScene('pot'); logRows[0].classList.add('on'); });
+      later(t + 1300, function () { logRows[0].classList.add('done'); logRows[1].classList.add('on'); });
+      later(t + 2500, function () { logRows[1].classList.add('done'); logRows[2].classList.add('on'); omArt.setScene(pick[1]); });
+      later(t + 3600, function () { logRows[2].classList.add('done'); });
+      later(t + 7200, function () { if (omVisible) cookOnce(); });
+    };
+    new IntersectionObserver(function (entries) {
+      var v = entries[0].isIntersecting;
+      if (v && !omVisible) cookOnce();
+      if (!v) { omTimers.forEach(clearTimeout); omTimers = []; }
+      omVisible = v;
+    }, { threshold: 0.35 }).observe(om);
   }
 
   /* ---------- receipt counters ---------- */
@@ -329,6 +392,7 @@
   if (KB && $('#wordmark-art')) {
     KB.create($('#wordmark-art'), {
       font: 8,
+      small: 5.5,
       field: 0.06,
       onFirstView: function (a) {
         var go = function () { a.setScene(KB.textScene('kitchen')); };
@@ -338,10 +402,49 @@
     });
   }
 
+  /* ---------- the secret menu: type "chef" (or tap the footer wordmark five times) ---------- */
+
+  if (KB) {
+    var typed = '', toast = null, toastTimer = 0, taps = [];
+    var unlock = function () {
+      KB.takeover('chef', 4200);
+      if (!toast) {
+        toast = document.createElement('p');
+        toast.className = 'secret-toast mono';
+        toast.setAttribute('role', 'status');
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = '<span>✳</span> secret menu unlocked. the chef says hi.';
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 3600);
+    };
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+      if (e.key.length !== 1) return;
+      typed = (typed + e.key.toLowerCase()).slice(-4);
+      if (typed === 'chef') { typed = ''; unlock(); }
+    });
+    var wm = $('#wordmark-art');
+    if (wm) wm.addEventListener('click', function () {
+      var now = Date.now();
+      taps = taps.filter(function (t) { return now - t < 1600; });
+      taps.push(now);
+      if (taps.length >= 5) { taps = []; unlock(); }
+    });
+  }
+
   var year = $('#year');
   if (year) year.textContent = new Date().getFullYear();
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+  // at most one layout read per frame, however fast the scroll events arrive
+  var scrollQueued = false;
+  function queueScroll() {
+    if (scrollQueued) return;
+    scrollQueued = true;
+    requestAnimationFrame(function () { scrollQueued = false; onScroll(); });
+  }
+  window.addEventListener('scroll', queueScroll, { passive: true });
+  window.addEventListener('resize', queueScroll);
   onScroll();
 })();

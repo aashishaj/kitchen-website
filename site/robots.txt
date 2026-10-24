@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://trykitchen.ai/sitemap.xml
