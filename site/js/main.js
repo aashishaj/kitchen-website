@@ -17,7 +17,7 @@
     doc.dataset.theme = t;
     if (save) { try { localStorage.setItem('kitchen-theme', t); } catch (e) {} }
     var meta = $('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', t === 'dark' ? '#11110e' : '#f6f4ee');
+    if (meta) meta.setAttribute('content', t === 'dark' ? '#14213a' : '#faefe0');
     if (themeBtn) themeBtn.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     if (KB) requestAnimationFrame(KB.refresh);
   }

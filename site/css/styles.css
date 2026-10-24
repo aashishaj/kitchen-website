@@ -1,4 +1,4 @@
-/* Kitchen · warm paper, ink, one lime accent, and food made of binary. */
+/* Kitchen · cream paper, ink, navy nights, one coral accent, and food made of binary. */
 
 /* Stand-ins sized to match the real fonts, so nothing moves when Google Fonts arrive.
    Numbers measured against Instrument Serif, Geist and Geist Mono in Chrome. */
@@ -9,31 +9,31 @@
 
 :root {
   color-scheme: light;
-  --paper: #f6f4ee;
-  --paper-2: #fbfaf6;
-  --card: #efece4;
-  --ink: #191815;
-  --muted: #67625a;
-  --line: rgba(25, 24, 21, 0.12);
-  --line-strong: rgba(25, 24, 21, 0.22);
-  --mark: #c6ef3a;
-  --mark-ink: #1b2106;
-  --ok: #4f8a3c;
-  --band: #191815;
-  --band-ink: #f1eee6;
-  --band-muted: #a7a297;
+  --paper: #faefe0;
+  --paper-2: #fdf6ec;
+  --card: #f3e4cf;
+  --ink: #2f2f2f;
+  --muted: #6b6358;
+  --line: rgba(47, 47, 47, 0.12);
+  --line-strong: rgba(47, 47, 47, 0.22);
+  --mark: #ef7a4f;
+  --mark-ink: #2f2f2f;
+  --ok: #5e8c3a;
+  --band: #14213a;
+  --band-ink: #f1e7d6;
+  --band-muted: #aab3c4;
 
   /* colours the binary art lights up in */
-  --art-ink: #2a2925;
-  --art-tomato: #cf5a4c;
-  --art-carrot: #dc8540;
-  --art-leaf: #5f8f5a;
-  --art-pasta: #d3a334;
-  --art-pot: #5d88ab;
-  --art-cream: #bfae86;
-  --art-steam: #9a958a;
-  --art-field: #191815;
-  --art-mark: #86b80c;
+  --art-ink: #2f2f2f;
+  --art-tomato: #d9573f;
+  --art-carrot: #ef7a4f;
+  --art-leaf: #7f9650;
+  --art-pasta: #d9a441;
+  --art-pot: #5e93cf;
+  --art-cream: #c9b48e;
+  --art-steam: #6fa3dc;
+  --art-field: #2f2f2f;
+  --art-mark: #ef7a4f;
   --field-alpha: 0.075;
   /* light digits on a dark page read much louder than dark on paper, so dark mode quiets the
      empty cells inside the art and makes the food colours more solid */
@@ -49,28 +49,30 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper: #11110e;
-  --paper-2: #171713;
-  --card: #1c1c18;
-  --ink: #f1eee6;
-  --muted: #a19c91;
-  --line: rgba(241, 238, 230, 0.12);
-  --line-strong: rgba(241, 238, 230, 0.24);
-  --ok: #a6cf7a;
-  --band: #1f1e19;
-  --band-ink: #f1eee6;
-  --band-muted: #a19c91;
+  --paper: #14213a;
+  --paper-2: #192843;
+  --card: #24365a;
+  --ink: #f1e7d6;
+  --muted: #aab3c4;
+  --line: rgba(241, 231, 214, 0.12);
+  --line-strong: rgba(241, 231, 214, 0.24);
+  --mark: #f08a60;
+  --mark-ink: #14213a;
+  --ok: #a9c47a;
+  --band: #0e182c;
+  --band-ink: #f1e7d6;
+  --band-muted: #aab3c4;
 
-  --art-ink: #ece8dd;
-  --art-tomato: #e4735f;
-  --art-carrot: #eb9a52;
-  --art-leaf: #8cbb80;
-  --art-pasta: #ecc65c;
-  --art-pot: #7eaad0;
-  --art-cream: #d9cca9;
-  --art-steam: #b4d36a; /* steam glows faintly lime at night */
-  --art-field: #f1eee6;
-  --art-mark: #c6ef3a;
+  --art-ink: #f1e7d6;
+  --art-tomato: #e8705a;
+  --art-carrot: #f08a60;
+  --art-leaf: #a9c47a;
+  --art-pasta: #e8bf6a;
+  --art-pot: #7fb0e6;
+  --art-cream: #e8dcc4;
+  --art-steam: #8db4e2; /* steam stays sky blue at night */
+  --art-field: #f1e7d6;
+  --art-mark: #f08a60;
   --field-alpha: 0.04;
   --art-field-scale: 0.38;
   --art-lift: 0.22;
@@ -481,8 +483,8 @@ ul, ol { padding: 0; list-style: none; }
   justify-self: center;
   width: min(360px, 100%);
   padding: 30px 26px 34px;
-  background: #fbf9f3;
-  color: #191815;
+  background: #fffaf2;
+  color: #2f2f2f;
   font-family: var(--mono);
   font-size: 13px;
   transform: rotate(-2.5deg) translateY(26px);
@@ -498,7 +500,7 @@ ul, ol { padding: 0; list-style: none; }
 .receipt li, .receipt-total { display: flex; justify-content: space-between; gap: 12px; }
 .receipt li b { font-weight: 500; }
 .receipt-total { padding: 16px 0; font-size: 15px; font-weight: 600; border-bottom: 1px dashed #c9c3b5; }
-.receipt-total b { background: #c6ef3a; padding: 0 6px; border-radius: 4px; }
+.receipt-total b { background: #ef7a4f; padding: 0 6px; border-radius: 4px; }
 .receipt-foot { text-align: center; margin-top: 16px; }
 
 /* ---------- who's at the table ---------- */
