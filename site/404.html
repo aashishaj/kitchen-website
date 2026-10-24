@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dish not found · Kitchen</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script>
+    (function () {
+      var t;
+      try { t = localStorage.getItem('kitchen-theme'); } catch (e) {}
+      document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="/css/styles.css?v=11">
+</head>
+<body>
+  <div class="field" aria-hidden="true">
+    <canvas id="field-base"></canvas>
+    <canvas id="field-glow"></canvas>
+  </div>
+  <nav class="nav" id="nav" aria-label="Main">
+    <div class="wrap nav-inner">
+      <a class="brand" href="/" aria-label="Kitchen home">
+        <span class="glyph" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span>kitchen</span>
+      </a>
+      <div class="nav-right">
+        <button class="theme" id="theme-toggle" type="button" aria-label="Switch to dark mode">
+          <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.4A8.5 8.5 0 1 1 8.6 4 6.9 6.9 0 0 0 20 15.4Z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.4M12 19.6V22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2 12h2.4M19.6 12H22M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+  </nav>
+  <main class="lost wrap">
+    <div>
+      <figure class="art"><canvas id="lost-art" role="img" aria-label="An empty plate with a few crumbs, made of binary digits"></canvas></figure>
+      <p class="eyebrow load"><span class="dot"></span>error 404</p>
+      <h1 class="display load" style="--d:1">Dish not found. <em>Someone ate it.</em></h1>
+      <p class="load" style="--d:2">The page you're after isn't on the menu anymore, or never was.</p>
+      <a class="btn btn-ink load" style="--d:3" href="/">Back to the kitchen</a>
+    </div>
+  </main>
+  <script src="/js/binary.js?v=11" defer></script>
+  <script src="/js/main.js?v=11" defer></script>
+  <script>
+    addEventListener('DOMContentLoaded', function () {
+      KitchenBinary.create(document.getElementById('lost-art'), { font: 10, field: 0.08, onFirstView: function (a) { a.setScene('plate'); } });
+    });
+  </script>
+</body>
+</html>

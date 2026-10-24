@@ -1,11 +1,10 @@
-# Netlify picks this up automatically when the repo is connected.
-# Astro builds the static site into dist/.
+# Netlify serves the static site in site/ as-is (no build step).
+# 404.html in site/ is picked up automatically for missing pages.
 [build]
-  command = "npm run build"
-  publish = "dist"
-
-[build.environment]
-  NODE_VERSION = "22"
+  publish = "site"
+  # Set explicitly so a build command saved in the Netlify dashboard (e.g. "npm run build"
+  # from the Astro version) doesn't override this; there is nothing to build.
+  command = "echo 'static site: nothing to build'"
 
 [[headers]]
   for = "/*"
@@ -15,13 +14,20 @@
     X-Robots-Tag = "noindex"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    # Only load what the page needs: our own files plus Google Fonts. 'unsafe-inline' covers the
+    # small theme script in <head>, the font loader's onload and the style="--d:…" attributes.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Cross-Origin-Opener-Policy = "same-origin"
 
 [[headers]]
-  for = "/art/*"
+  for = "/css/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=3600"
 
 [[headers]]
-  for = "/_astro/*"
+  for = "/js/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=3600"
