@@ -2,6 +2,9 @@
 # 404.html in site/ is picked up automatically for missing pages.
 [build]
   publish = "site"
+  # Set explicitly so a build command saved in the Netlify dashboard (e.g. "npm run build"
+  # from the Astro version) doesn't override this; there is nothing to build.
+  command = "echo 'static site: nothing to build'"
 
 [[headers]]
   for = "/*"
