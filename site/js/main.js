@@ -1,203 +1,347 @@
-/* Kitchen landing page: theme + story/tech toggles, landscapes, status chip, waitlist. */
+/* Kitchen landing page: theme, entrances, the recipe scroll story, and the seat form. */
+(function () {
+  'use strict';
 
-const CONFIG = {
-  // Calendar booking page for every "book a demo" link.
-  demoUrl: '#chefs-table',
-};
+  var doc = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var KB = window.KitchenBinary;
+  var $ = function (s, el) { return (el || document).querySelector(s); };
+  var $$ = function (s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
 
-// Code that grows in the field rows of every landscape.
-const FIELD_ROWS = [
-  { size: 17, op: 0.95, dur: 140, text: 'python3 -m pip install -r requirements.txt  ·  export OPENAI_API_KEY=sk-•••••  ·  git clone github.com/you/app && cd app  ·  ' },
-  { size: 12, op: 0.7, dur: 190, text: 'npm install --silent # soaking…  ·  ✓ served on localhost:3000  ·  cp .env.example .env # keys sorted  ·  ' },
-  { size: 14, op: 0.85, dur: 165, text: 'kitchen share --team # one click  ·  psql -c "create database app" # frying…  ·  docker compose up -d # simmering…  ·  ' },
-  { size: 12, op: 0.6, dur: 210, text: 'brew install postgres  ·  export DATABASE_URL=postgres://localhost/app  ·  pnpm dev  ·  ✓ served  ·  ' },
-];
+  /* ---------- theme: follows the system until you pick one, then remembers ---------- */
 
-const STATUS_WORDS = ['brewing…', 'soaking…', 'frying…', 'simmering…', 'served ✓'];
-
-/* Analytics: pushes to dataLayer, so any tag manager / analytics tool can pick it up. */
-function track(event, props = {}) {
-  (window.dataLayer = window.dataLayer || []).push({ event, ...props });
-}
-
-const root = document.documentElement;
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const store = {
-  get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
-  set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* private mode */ } },
-};
-
-/* ---------- theme: follows the system until the visitor picks one ---------- */
-const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
-function setTheme(theme, remember) {
-  root.dataset.theme = theme;
-  document.querySelectorAll('[data-theme-name]').forEach((el) => { el.textContent = theme; });
-  const btn = document.getElementById('theme-toggle');
-  if (btn) btn.setAttribute('aria-label', `theme: ${theme}. switch to ${theme === 'dark' ? 'light' : 'dark'}`);
-  if (remember) { store.set('kitchen-theme', theme); root.dataset.themeLocked = '1'; }
-}
-setTheme(root.dataset.theme || (sysDark.matches ? 'dark' : 'light'));
-sysDark.addEventListener('change', (e) => { if (!root.dataset.themeLocked) setTheme(e.matches ? 'dark' : 'light'); });
-document.getElementById('theme-toggle')?.addEventListener('click', () => {
-  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-  setTheme(next, true);
-  track('theme_toggle', { theme: next });
-});
-
-/* ---------- story / tech: same layout, different words ---------- */
-function setMode(mode, remember) {
-  root.dataset.mode = mode;
-  document.querySelectorAll('[data-mode-btn]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.modeBtn === mode)));
-  if (remember) store.set('kitchen-mode', mode);
-}
-setMode(root.dataset.mode || 'story');
-document.querySelectorAll('[data-mode-btn]').forEach((b) => b.addEventListener('click', () => {
-  if (root.dataset.mode === b.dataset.modeBtn) return;
-  setMode(b.dataset.modeBtn, true);
-  track('mode_toggle', { mode: b.dataset.modeBtn });
-}));
-
-/* ---------- printed landscapes ---------- */
-const tpl = document.getElementById('landscape-tpl');
-document.querySelectorAll('[data-landscape]').forEach((slot) => {
-  if (!tpl) return;
-  slot.append(tpl.content.cloneNode(true));
-  const field = slot.querySelector('.field');
-  FIELD_ROWS.forEach((r, i) => {
-    const row = document.createElement('div');
-    row.className = `code-row${i % 2 ? ' rev' : ''}`;
-    row.style.cssText = `--dur:${r.dur}s;font-size:${r.size}px;opacity:${r.op}`;
-    for (let n = 0; n < 2; n++) {
-      const span = document.createElement('span');
-      span.textContent = r.text.repeat(3);
-      row.append(span);
-    }
-    field.append(row);
-  });
-});
-
-/* ---------- night sky: * stars, placed the same way every visit ---------- */
-document.querySelectorAll('[data-night] .night').forEach((layer, li) => {
-  let seed = 11 + li * 97;
-  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  const stars = layer.dataset.stars ? Number(layer.dataset.stars) : 30;
-  const minX = Number(layer.dataset.starsFrom || 0); // keep stars clear of text on the left
-  for (let i = 0; i < stars; i++) {
-    const s = document.createElement('span');
-    s.className = `star${rnd() < 0.3 ? ' twinkle' : ''}`;
-    s.textContent = rnd() < 0.75 ? '*' : '·';
-    s.style.cssText = `left:${(minX + rnd() * (100 - minX)).toFixed(1)}%;top:${(rnd() * 62).toFixed(1)}%;font-size:${(9 + rnd() * 8).toFixed(0)}px;--o:${(0.45 + rnd() * 0.5).toFixed(2)};animation-delay:${(rnd() * -6).toFixed(1)}s`;
-    layer.append(s);
+  var themeBtn = $('#theme-toggle');
+  function applyTheme(t, save) {
+    doc.dataset.theme = t;
+    if (save) { try { localStorage.setItem('kitchen-theme', t); } catch (e) {} }
+    var meta = $('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', t === 'dark' ? '#11110e' : '#f6f4ee');
+    if (themeBtn) themeBtn.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    if (KB) requestAnimationFrame(KB.refresh);
   }
-});
-
-/* ---------- nav sits in the sky, turns paper once you scroll ---------- */
-const nav = document.getElementById('nav');
-const hero = document.getElementById('top');
-if (nav && hero) {
-  const navBar = nav.querySelector('.nav-inner');
-  const onScroll = () => nav.classList.toggle('solid', window.scrollY > hero.offsetHeight - navBar.offsetHeight - 24);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-}
-
-/* ---------- course strip: highlight the course you're reading ---------- */
-const courseLinks = [...document.querySelectorAll('[data-course]')];
-if (courseLinks.length) {
-  const strip = courseLinks[0].parentElement;
-  const byId = new Map(courseLinks.map((a) => [a.getAttribute('href').slice(1), a]));
-  const setCurrent = (link) => {
-    courseLinks.forEach((a) => a.setAttribute('aria-current', String(a === link)));
-    if (link && strip.scrollWidth > strip.clientWidth) {
-      // keep the active course visible on the phone strip without moving the page
-      strip.scrollTo({ left: link.offsetLeft - strip.clientWidth / 2 + link.offsetWidth / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
-    }
-  };
-  const spy = new IntersectionObserver((entries) => {
-    entries.forEach((en) => { if (en.isIntersecting) setCurrent(byId.get(en.target.id)); });
-  }, { rootMargin: '-40% 0px -55% 0px' });
-  byId.forEach((_, id) => { const s = document.getElementById(id); if (s) spy.observe(s); });
-  courseLinks.forEach((a) => a.addEventListener('click', () => track('course_click', { course: a.textContent })));
-}
-
-/* ---------- status chip cycles kitchen words ---------- */
-const chips = document.querySelectorAll('[data-status-chip]');
-if (chips.length && !reduceMotion) {
-  let i = 0;
-  setInterval(() => {
-    i = (i + 1) % STATUS_WORDS.length;
-    chips.forEach((c) => { c.textContent = STATUS_WORDS[i]; });
-  }, 1900);
-}
-
-/* ---------- book a demo ---------- */
-document.querySelectorAll('[data-demo]').forEach((a) => {
-  a.setAttribute('href', CONFIG.demoUrl);
-  a.addEventListener('click', () => track('demo_click', { where: a.dataset.demo || 'unknown' }));
-});
-document.querySelectorAll('[data-track]').forEach((a) => a.addEventListener('click', () => track(a.dataset.track)));
-
-/* ---------- waitlist (Netlify Forms) ---------- */
-const ROLES = ['lawyer', 'finance', 'ops', 'developer', 'something else'];
-const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-
-// Netlify Forms takes a urlencoded POST to any page. Locally there's no Netlify, so just pretend.
-async function sendForm(fields) {
-  if (isLocal) { console.info('[kitchen] would submit', fields); return; }
-  const res = await fetch('/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams(fields).toString(),
+  applyTheme(doc.dataset.theme || 'light');
+  if (themeBtn) themeBtn.addEventListener('click', function () { applyTheme(doc.dataset.theme === 'dark' ? 'light' : 'dark', true); });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+    var saved = null;
+    try { saved = localStorage.getItem('kitchen-theme'); } catch (err) {}
+    if (!saved) applyTheme(e.matches ? 'dark' : 'light');
   });
-  if (!res.ok) throw new Error(String(res.status));
-}
 
-function askRole(form, email) {
-  const box = document.createElement('div');
-  box.className = 'waitlist-role';
-  box.innerHTML = '<p class="label">// one question: what do you do?</p>';
-  const row = document.createElement('div');
-  row.className = 'role-chips';
-  ROLES.forEach((role) => {
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'pill'; b.textContent = role;
-    b.addEventListener('click', async () => {
-      row.querySelectorAll('button').forEach((x) => { x.disabled = true; });
-      b.setAttribute('aria-pressed', 'true');
-      try { await sendForm({ 'form-name': 'waitlist-role', email, role }); } catch { /* the signup already landed */ }
-      track('waitlist_role', { role });
-      box.querySelector('.label').textContent = '// noted. thanks, see you at the table.';
+  /* ---------- background field ---------- */
+
+  if (KB && $('#field-base')) KB.field($('#field-base'), $('#field-glow'));
+
+  /* ---------- hero headline: split into words that rise in ---------- */
+
+  $$('[data-split]').forEach(function (el) {
+    var i = 0;
+    function words(text, parent) {
+      text.split(/(\s+)/).forEach(function (part) {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { parent.appendChild(document.createTextNode(' ')); return; }
+        var w = document.createElement('span'), wi = document.createElement('span');
+        w.className = 'w';
+        wi.className = 'wi';
+        wi.style.setProperty('--i', i++);
+        wi.textContent = part;
+        w.appendChild(wi);
+        parent.appendChild(w);
+      });
+    }
+    var nodes = Array.prototype.slice.call(el.childNodes);
+    el.textContent = '';
+    nodes.forEach(function (n) {
+      if (n.nodeType === 3) words(n.textContent, el);
+      else { var clone = n.cloneNode(false); words(n.textContent, clone); el.appendChild(clone); }
     });
-    row.append(b);
   });
-  box.append(row);
-  form.append(box);
-}
 
-document.querySelectorAll('form[data-waitlist]').forEach((form) => {
-  const input = form.querySelector('input[type="email"]');
-  const btn = form.querySelector('button[type="submit"]');
-  const msg = form.querySelector('.waitlist-msg');
-  const say = (text, ok) => { msg.textContent = text; msg.classList.toggle('ok', !!ok); };
+  function ready() { document.body.classList.add('loaded'); }
+  if (document.fonts && document.fonts.ready) {
+    Promise.race([document.fonts.ready, new Promise(function (r) { setTimeout(r, 700); })]).then(ready);
+  } else ready();
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = input.value.trim();
-    if (!email || !input.checkValidity()) { say('that email looks half-baked. try again?'); input.focus(); return; }
-    btn.disabled = true;
-    say('brewing…');
-    try {
-      const fields = Object.fromEntries(new FormData(form));
-      await sendForm({ ...fields, email });
-      track('waitlist_signup', { source: form.dataset.waitlist, mode: root.dataset.mode });
-      form.classList.add('done');
-      say('✓ table reserved. we’ll ring the dinner bell when it’s ready.', true);
-      askRole(form, email);
-    } catch {
-      say('that didn’t cook. give it another go?');
-      btn.disabled = false;
+  /* ---------- nav: border, reading progress, current section ---------- */
+
+  var nav = $('#nav'), bar = $('#progress');
+  function onScroll() {
+    var y = window.scrollY, max = doc.scrollHeight - window.innerHeight;
+    nav.classList.toggle('scrolled', y > 8);
+    if (bar) bar.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
+    scrub();
+    pickStep();
+  }
+
+  var navLinks = $$('.nav-links a');
+  var sectionIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      navLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id); });
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  navLinks.forEach(function (a) { var s = $(a.getAttribute('href')); if (s) sectionIO.observe(s); });
+
+  /* ---------- reveal on scroll ---------- */
+
+  var revealIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      revealIO.unobserve(e.target);
+      // once it has arrived, hovers shouldn't wait for the entrance stagger
+      setTimeout(function () { e.target.style.transitionDelay = '0s'; }, 1400);
+    });
+  }, { rootMargin: '0px 0px -10% 0px' });
+  $$('.reveal').forEach(function (el) { revealIO.observe(el); });
+
+  /* ---------- "the catch": words light up as you read down ---------- */
+
+  var scrubEl = $('[data-scrub]'), scrubWords = [];
+  if (scrubEl) {
+    var text = scrubEl.textContent.trim();
+    scrubEl.textContent = '';
+    text.split(/\s+/).forEach(function (w, i, all) {
+      var s = document.createElement('span');
+      s.className = 'sw';
+      s.textContent = w;
+      scrubEl.appendChild(s);
+      if (i < all.length - 1) scrubEl.appendChild(document.createTextNode(' '));
+      scrubWords.push(s);
+    });
+  }
+  var litCount = -1;
+  function scrub() {
+    if (!scrubEl || reduce) return;
+    var r = scrubEl.getBoundingClientRect(), vh = window.innerHeight;
+    var p = (vh * 0.82 - r.top) / (r.height + vh * 0.3);
+    var n = Math.round(Math.max(0, Math.min(1, p)) * scrubWords.length);
+    if (n === litCount) return;
+    litCount = n;
+    scrubWords.forEach(function (w, i) { w.classList.toggle('lit', i < n); });
+  }
+
+  /* ---------- hero: today's special, cycling dishes ---------- */
+
+  var dishes = [
+    { scene: 'pasta', food: 'Pasta', app: 'A team wiki, from Outline' },
+    { scene: 'ramen', food: 'Ramen', app: 'A sales CRM, from Twenty' },
+    { scene: 'salad', food: 'Salad', app: 'Project planning, from Plane' },
+    { scene: 'cake', food: 'Cake', app: 'Contract signing, from Documenso' }
+  ];
+  var DWELL = 5200;
+  var dishEl = $('#dish'), heroCanvas = $('#hero-art');
+  if (KB && heroCanvas) {
+    var status = $('#dish-status'), statusText = $('span', status);
+    var nameEl = $('.dish-name'), foodEl = $('#dish-food'), appEl = $('#dish-app');
+    var dots = $$('.dish-dots button');
+    var current = 0, timer = 0, startedAt = 0, remaining = DWELL, paused = false;
+    dishEl.style.setProperty('--dwell', DWELL + 'ms');
+
+    var hero = KB.create(heroCanvas, {
+      font: 10,
+      field: 0.09,
+      onFirstView: function (art) { show(0, true); }
+    });
+    hero.onSettle = function () { status.classList.remove('cooking'); statusText.textContent = 'served ✓'; };
+
+    function show(i, first) {
+      current = (i + dishes.length) % dishes.length;
+      var d = dishes[current];
+      hero.setScene(d.scene);
+      status.classList.add('cooking');
+      statusText.textContent = ['brewing…', 'simmering…', 'frying…', 'plating…'][current];
+      dots.forEach(function (b, k) { b.setAttribute('aria-selected', k === current ? 'true' : 'false'); });
+      if (!first) {
+        foodEl.textContent = d.food;
+        appEl.textContent = d.app;
+        nameEl.classList.remove('swap');
+        void nameEl.offsetWidth;
+        nameEl.classList.add('swap');
+      }
+      schedule(DWELL);
     }
-  });
-});
+    function schedule(ms) {
+      clearTimeout(timer);
+      remaining = ms;
+      startedAt = performance.now();
+      if (!paused && !reduce) timer = setTimeout(function () { show(current + 1); }, ms);
+    }
+    dots.forEach(function (b, k) { b.addEventListener('click', function () { show(k); }); });
+    dishEl.addEventListener('mouseenter', function () {
+      paused = true;
+      clearTimeout(timer);
+      remaining -= performance.now() - startedAt;
+      dishEl.classList.add('paused');
+    });
+    dishEl.addEventListener('mouseleave', function () {
+      paused = false;
+      dishEl.classList.remove('paused');
+      schedule(Math.max(400, remaining));
+    });
+  }
 
-document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+  /* ---------- the recipe: one sticky dish that changes as you read each step ---------- */
+
+  var steps = $$('.step'), activeStep = -1, recipeArt = null;
+  var recipeCanvas = $('#recipe-art');
+  if (KB && recipeCanvas) {
+    recipeArt = KB.create(recipeCanvas, {
+      font: 11,
+      field: 0.08,
+      onFirstView: function (art) { if (activeStep < 0) setStep(0); }
+    });
+  }
+  // the typed lines start empty and type themselves when their step comes up
+  $$('.step .type').forEach(function (el) { if (!reduce) el.textContent = ''; });
+
+  function typeOut(el) {
+    var full = el.dataset.type || '';
+    clearInterval(el._t);
+    if (reduce) { el.textContent = full; return; }
+    var i = 0;
+    el.textContent = '';
+    setTimeout(function () {
+      el._t = setInterval(function () {
+        el.textContent = full.slice(0, ++i);
+        if (i >= full.length) clearInterval(el._t);
+      }, full.length > 10 ? 34 : 140);
+    }, 350);
+  }
+
+  function setStep(i) {
+    if (i === activeStep || !steps[i]) return;
+    activeStep = i;
+    steps.forEach(function (s, k) { s.classList.toggle('is-active', k === i); });
+    var s = steps[i];
+    $$('.type', s).forEach(typeOut);
+    if (recipeArt) recipeArt.setScene(s.dataset.scene);
+    $('#step-num').textContent = '0' + (i + 1);
+    $('#step-dish').textContent = s.dataset.dish;
+    $('#recipe-bar').style.width = ((i + 1) / steps.length) * 100 + '%';
+  }
+
+  function pickStep() {
+    if (!steps.length) return;
+    var line = window.innerHeight * (window.innerWidth <= 860 ? 0.62 : 0.5), best = 0, bestD = Infinity;
+    steps.forEach(function (s, k) {
+      var r = s.getBoundingClientRect();
+      var d = r.top > line ? r.top - line : (r.bottom < line ? line - r.bottom : 0);
+      if (d < bestD) { bestD = d; best = k; }
+    });
+    var rr = steps[0].parentNode.getBoundingClientRect();
+    if (rr.bottom > 0 && rr.top < window.innerHeight) setStep(best);
+  }
+
+  /* ---------- receipt counters ---------- */
+
+  var countIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      countIO.unobserve(e.target);
+      $$('[data-count]', e.target).forEach(function (el, k) {
+        var to = +el.dataset.count;
+        if (reduce) { el.textContent = to; return; }
+        var t0 = performance.now() + k * 180;
+        (function step(now) {
+          var p = Math.max(0, Math.min(1, (now - t0) / 1100));
+          el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(step);
+        })(t0);
+      });
+    });
+  }, { threshold: 0.4 });
+  var receipt = $('.receipt');
+  if (receipt) countIO.observe(receipt);
+
+  /* ---------- seats: tiers, form, thank-you ---------- */
+
+  var form = $('#join-form'), thanks = $('#thanks');
+  var LABELS = { waitlist: 'Join the waitlist', team: 'Request early access', partner: 'Apply as a design partner' };
+  var THANKS = {
+    waitlist: ["You're on the list.", "We'll ring the dinner bell the moment there's a seat for you."],
+    team: ['Table request received.', "One of us will email you to find a time. Bring the tool you've been putting off."],
+    partner: ["Welcome to the chef's table.", "Both of us read every one of these. Expect a note from a founder, not a robot."]
+  };
+
+  function choose(kind, scroll) {
+    var radio = form && form.querySelector('input[name="kind"][value="' + kind + '"]');
+    if (!radio) return;
+    radio.checked = true;
+    syncForm();
+    if (scroll) {
+      $('.booking').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      setTimeout(function () { form.email.focus({ preventScroll: true }); }, reduce ? 0 : 700);
+    }
+  }
+  function syncForm() {
+    var kind = form.kind.value;
+    $('#submit-label').textContent = LABELS[kind];
+    $$('[data-for]', form).forEach(function (el) { el.hidden = el.dataset.for.split(' ').indexOf(kind) < 0; });
+    $$('.tier').forEach(function (t) { t.classList.toggle('is-chosen', t.dataset.tier === kind); });
+  }
+
+  if (form) {
+    syncForm();
+    $$('input[name="kind"]', form).forEach(function (r) { r.addEventListener('change', syncForm); });
+    $$('[data-choose]').forEach(function (b) { b.addEventListener('click', function () { choose(b.dataset.choose, true); }); });
+    $$('[data-choice-link]').forEach(function (a) { a.addEventListener('click', function () { choose(a.dataset.choiceLink, false); }); });
+
+    var err = $('#form-error'), submit = $('#submit');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        err.textContent = email ? "That email doesn't look quite right." : 'We just need an email to save your seat.';
+        form.email.focus();
+        form.classList.remove('shake');
+        void form.offsetWidth;
+        form.classList.add('shake');
+        return;
+      }
+      err.textContent = '';
+      var kind = form.kind.value;
+      submit.disabled = true;
+      $('#submit-label').textContent = 'cooking…';
+      // Preview build: nothing is sent. Hook the real waitlist tool in here.
+      setTimeout(function () {
+        $('#thanks-title').textContent = THANKS[kind][0];
+        $('#thanks-text').textContent = THANKS[kind][1];
+        form.hidden = true;
+        thanks.hidden = false;
+        thanks.focus();
+        submit.disabled = false;
+      }, reduce ? 0 : 900);
+    });
+    $('#again').addEventListener('click', function () {
+      form.reset();
+      syncForm();
+      thanks.hidden = true;
+      form.hidden = false;
+      form.email.focus();
+    });
+  }
+
+  /* ---------- the dinner bell and the footer wordmark ---------- */
+
+  if (KB && $('#bell-art')) {
+    KB.create($('#bell-art'), { font: 9, field: 0.06, onFirstView: function (a) { a.setScene('bell'); } });
+  }
+  if (KB && $('#wordmark-art')) {
+    KB.create($('#wordmark-art'), {
+      font: 8,
+      field: 0.06,
+      onFirstView: function (a) {
+        var go = function () { a.setScene(KB.textScene('kitchen')); };
+        if (document.fonts && document.fonts.load) document.fonts.load('italic 100px "Instrument Serif"').then(go, go);
+        else go();
+      }
+    });
+  }
+
+  var year = $('#year');
+  if (year) year.textContent = new Date().getFullYear();
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();

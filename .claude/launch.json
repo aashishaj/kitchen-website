@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "4321", "--directory", "site"],
       "port": 4321
+    },
+    {
+      "name": "samples",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4322", "--directory", "sample"],
+      "port": 4322
     }
   ]
 }

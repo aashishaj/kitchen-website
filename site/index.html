@@ -1,427 +1,519 @@
 <!doctype html>
-<html lang="en" data-mode="story">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>kitchen · pick an app. we'll do the cooking.</title>
-  <meta name="description" content="Kitchen turns open-source software into apps that run on your own laptop. No setup. No terminal. Your data stays home.">
+  <title>Kitchen · Your next internal tool is already on GitHub</title>
+  <meta name="description" content="Kitchen turns proven open-source projects into private apps that run on your own Mac. Pick from the menu, add your data, and it's ready. No servers, no terminal.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="kitchen · pick an app. we'll do the cooking.">
-  <meta property="og:description" content="Open-source software as real apps on your own laptop. No setup, no terminal. Your data stays home.">
-  <!-- og.png is rendered from the hero by scripts/make-og.sh. Swap to the full https:// URL once deployed. -->
+  <meta property="og:title" content="Kitchen · Your next internal tool is already on GitHub">
+  <meta property="og:description" content="Proven open-source tools, cooked into private apps on your own Mac. No servers. No terminal. Your data stays home.">
   <meta property="og:image" content="/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="kitchen: pick an app. we'll do the cooking.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#6FA3DC" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#14213A" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f6f4ee">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-  <!-- theme + mode before first paint, so nothing flashes -->
+  <!-- pick the theme before first paint, so nothing flashes -->
   <script>
     (function () {
-      var d = document.documentElement, t, m;
-      try { t = localStorage.getItem('kitchen-theme'); m = localStorage.getItem('kitchen-mode'); } catch (e) {}
-      d.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      if (t) d.dataset.themeLocked = '1';
-      if (m) d.dataset.mode = m;
+      var t;
+      try { t = localStorage.getItem('kitchen-theme'); } catch (e) {}
+      document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     })();
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="css/styles.css?v=4">
 </head>
 <body>
   <!--
-    EDITING COPY: every line of text lives in this file.
-    Story mode words sit in class="v-story", tech mode words in class="v-tech".
-    Change either one; the toggle in the nav swaps them. Text with no v-* class shows in both modes.
+    EDITING COPY: every word on the page lives in this file. Change it freely;
+    nothing in the scripts depends on the wording.
   -->
 
-  <nav class="nav" id="nav" aria-label="main">
+  <div class="field" aria-hidden="true">
+    <canvas id="field-base"></canvas>
+    <canvas id="field-glow"></canvas>
+  </div>
+
+  <a class="skip" href="#main">Skip to content</a>
+
+  <nav class="nav" id="nav" aria-label="Main">
     <div class="wrap nav-inner">
-      <a href="#top" class="brand" aria-label="kitchen, back to top">
-        <span class="brand-mark" aria-hidden="true">&gt;_</span>
-        <span class="brand-word">kitchen</span>
+      <a class="brand" href="#top" aria-label="Kitchen, back to top">
+        <span class="glyph" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span>kitchen</span>
       </a>
       <div class="nav-links">
-        <a href="#menu">~/menu</a>
-        <a href="#recipe">./how-it-works</a>
-        <a href="#chefs-table">./for-teams</a>
+        <a href="#recipe">How it works</a>
+        <a href="#why">Why Kitchen</a>
+        <a href="#table">Who it's for</a>
+        <a href="#faq">Questions</a>
       </div>
-      <div class="nav-toggles">
-        <button class="pill" id="theme-toggle" type="button"><span class="theme-word">theme: <span data-theme-name>light</span> </span><span aria-hidden="true">◐</span></button>
-        <div class="pill seg" role="group" aria-label="story or tech words">
-          <button type="button" data-mode-btn="story" aria-pressed="true">story</button>
-          <button type="button" data-mode-btn="tech" aria-pressed="false">tech</button>
-        </div>
-      </div>
-    </div>
-    <!-- course strip: shows once you scroll past the hero, highlights where you are -->
-    <div class="courses">
-      <div class="wrap courses-inner" aria-label="jump to a course">
-        <a href="#problem" data-course>starters</a>
-        <a href="#recipe" data-course>mains</a>
-        <a href="#menu" data-course>specials</a>
-        <a href="#table" data-course>guests</a>
-        <a href="#house-rules" data-course>house rules</a>
-        <a href="#reserve" data-course>dessert: reserve a table</a>
-        <a href="#chefs-table" data-course>chef's table</a>
+      <div class="nav-right">
+        <button class="theme" id="theme-toggle" type="button" aria-label="Switch to dark mode">
+          <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.4A8.5 8.5 0 1 1 8.6 4 6.9 6.9 0 0 0 20 15.4Z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.4M12 19.6V22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2 12h2.4M19.6 12H22M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg>
+        </button>
+        <a class="btn btn-ink btn-sm" href="#join">Get early access</a>
       </div>
     </div>
+    <div class="progress" aria-hidden="true"><i id="progress"></i></div>
   </nav>
 
-  <main>
-    <!-- 1. HERO -->
-    <header class="hero sky" id="top" data-night>
-      <div class="night" aria-hidden="true" data-stars="26" data-stars-from="52">
-        <svg class="moon" viewBox="0 0 80 80"><circle class="lit" cx="40" cy="40" r="34"/><circle class="bite" cx="55" cy="30" r="30"/></svg>
-      </div>
+  <main id="main">
 
-      <div class="wrap hero-inner">
-        <div class="hero-copy">
-          <p class="label">// local-first apps · mac · private beta</p>
-          <h1>
-            <span class="v-story">pick an app.<br><em>we'll do the cooking.</em><span class="cursor" aria-hidden="true"></span></span>
-            <span class="v-tech">run any repo locally.<br><em>zero deploy scripts.</em><span class="cursor" aria-hidden="true"></span></span>
-          </h1>
-          <p class="body-lg v-story">Kitchen turns open-source software into apps that run on your own laptop. No setup. No terminal. Your data stays home.</p>
-          <p class="body-lg v-tech">GitHub URL in, running app out. Env vars, databases and API keys handled. Local-first, Mac today.</p>
-          <form class="waitlist hero-form" name="waitlist" method="POST" data-waitlist="hero" novalidate>
-            <input type="hidden" name="form-name" value="waitlist">
-            <input type="hidden" name="source" value="hero">
-            <p class="sr-only"><label>leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-            <label class="sr-only" for="hero-email">your work email</label>
-            <div class="input-row">
-              <input id="hero-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com_">
-              <button class="btn" type="submit"><span class="prompt">$</span> join the waitlist</button>
-            </div>
-            <p class="waitlist-msg" role="status" aria-live="polite"></p>
-          </form>
-          <p class="hero-demo"><a class="link" href="#chefs-table" data-demo="hero">or book a demo for your team →</a></p>
+    <!-- HERO -->
+    <section class="hero wrap" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow load" style="--d:0"><span class="dot"></span>Mac app · private beta · taking design partners</p>
+        <h1 class="display" id="hero-title" data-split>Your next internal tool is already <em>on GitHub.</em></h1>
+        <p class="lede load" style="--d:6">There's a free, open-source version of almost every tool your team pays for. Kitchen turns it into a real app on your Mac. Pick one from the menu, add your data, and you're done. No servers to rent. No terminal. No developer on call.</p>
+        <div class="actions load" style="--d:7">
+          <a class="btn btn-ink" href="#join" data-choice-link="waitlist">Get early access</a>
+          <a class="btn btn-ghost" href="#join" data-choice-link="partner">Become a design partner <span class="arrow" aria-hidden="true">→</span></a>
         </div>
-        <figure class="art hero-art">
-          <canvas class="binary" data-art="mug" role="img" aria-label="a steaming coffee mug made of binary digits"></canvas>
-          <figcaption class="art-label" aria-hidden="true">brewing…</figcaption>
-        </figure>
+        <p class="note load" style="--d:8"><span class="lock" aria-hidden="true"></span>Your data stays on your machine. That's the whole point.</p>
       </div>
 
-      <div class="landscape" data-landscape></div>
-      <div class="statusbar" aria-hidden="true">
-        <span><span class="mode-chip">NORMAL</span> kitchen ~ main</span>
-        <span class="hide-sm"><span data-status-chip>brewing…</span> 3 apps on the stove</span>
-        <span>offline ✓ <span class="hide-sm">· 0 MB sent to cloud · <span data-theme-name>light</span></span></span>
-      </div>
-    </header>
-
-    <!-- 2. THE PROBLEM -->
-    <section class="section center" id="problem">
-      <div class="wrap narrow">
-        <p class="label">// cat README.md</p>
-        <h2 class="v-story">the best software on the internet is free. <em>using it takes a developer and an afternoon.</em></h2>
-        <h2 class="v-tech">readme archaeology. dependency hell. <em>a missing .env.</em></h2>
-<pre class="readme" aria-label="a typical installation guide, abandoned at step 4"><span class="dim">## installation</span>
-1. install python 3.11 <span class="dim">(not 3.12)</span>
-2. set up postgres
-3. copy .env.example to .env, fill in 14 keys
-4. <s>it should just work</s> <span class="dim">¯\_(ツ)_/¯</span></pre>
-      </div>
+      <figure class="dish load" style="--d:3" id="dish">
+        <div class="dish-head">
+          <span class="mono">Today's special</span>
+          <span class="chip-status" id="dish-status"><i></i><span>served ✓</span></span>
+        </div>
+        <div class="dish-stage">
+          <canvas id="hero-art" role="img" aria-label="A dish drawn entirely in binary digits. It changes between pasta, ramen, salad and cake."></canvas>
+        </div>
+        <figcaption class="dish-foot">
+          <div class="dish-name" aria-live="polite">
+            <span class="mono" id="dish-food">Pasta</span>
+            <strong id="dish-app">A team wiki, from Outline</strong>
+          </div>
+          <div class="dish-dots" role="tablist" aria-label="Choose a dish">
+            <button role="tab" aria-selected="true" aria-label="Pasta"></button>
+            <button role="tab" aria-selected="false" aria-label="Ramen"></button>
+            <button role="tab" aria-selected="false" aria-label="Salad"></button>
+            <button role="tab" aria-selected="false" aria-label="Cake"></button>
+          </div>
+        </figcaption>
+      </figure>
     </section>
 
-    <div class="divider" aria-hidden="true">/* ··············· end of problem ··············· */</div>
-
-    <!-- 3. HOW IT WORKS -->
-    <section class="section" id="recipe">
-      <div class="wrap">
-        <div class="center">
-          <p class="label">// 01 the recipe</p>
-          <h2 class="v-story">pick a dish. <em>we prep it. dinner's ready.</em></h2>
-          <h2 class="v-tech">catalog or url. <em>provisioned. running.</em></h2>
-        </div>
-
-        <div class="steps">
-          <article class="step">
-            <figure class="art">
-              <canvas class="binary" data-art="bowl" role="img" aria-label="a bowl of fruit made of binary digits"></canvas>
-            </figure>
-            <span class="step-no">// 01 pick</span>
-            <h3 class="v-story">pick a dish.</h3>
-            <h3 class="v-tech">catalog or url.</h3>
-            <p class="v-story">Choose an app from our menu, or paste a link to any open-source project.</p>
-            <p class="v-tech">Pick from the catalog or paste any GitHub repo. Kitchen reads it and works out the stack.</p>
-          </article>
-          <article class="step">
-            <figure class="art">
-              <canvas class="binary" data-art="board" role="img" aria-label="a knife and a chopping board made of binary digits"></canvas>
-            </figure>
-            <span class="step-no">// 02 prep</span>
-            <h3 class="v-story">we prep it.</h3>
-            <h3 class="v-tech">auto-provisioning.</h3>
-            <p class="v-story">Kitchen sets up everything the app needs: databases, passwords, connections to tools like OpenAI. You don't see any of it.</p>
-            <p class="v-tech">Runtimes, dependencies, env vars, local databases and API keys, handled. No deploy scripts.</p>
-          </article>
-          <article class="step">
-            <figure class="art">
-              <canvas class="binary" data-art="plate" role="img" aria-label="a plated dish with cutlery made of binary digits"></canvas>
-            </figure>
-            <span class="step-no">// 03 serve</span>
-            <h3 class="v-story">dinner's ready.</h3>
-            <h3 class="v-tech">run + share.</h3>
-            <p class="v-story">The app opens on your laptop, ready to use. Share it with your team in one click.</p>
-            <p class="v-tech">Runs in a local sandbox on localhost. One-click share sends the full setup, not a list of instructions.</p>
-          </article>
-        </div>
-
-<pre class="terminal v-tech" aria-label="example terminal session"><span class="dim">$</span> kitchen cook github.com/you/app
-<span class="dim">→ soaking dependencies…</span>
-<span class="dim">→ frying database…</span>
-<span class="dim">→ seasoning .env (3 keys)…</span>
-<span class="ok">✓ served on localhost:3000</span></pre>
+    <!-- MENU STRIP -->
+    <div class="strip" aria-label="A few things on the menu">
+      <div class="strip-track">
+        <ul class="strip-list">
+          <li><b>Twenty</b> sales CRM</li>
+          <li><b>Outline</b> team wiki</li>
+          <li><b>Plane</b> project planning</li>
+          <li><b>Documenso</b> contract signing</li>
+          <li><b>Listmonk</b> newsletters</li>
+          <li><b>Appsmith</b> internal dashboards</li>
+          <li><b>ToolJet</b> admin panels</li>
+          <li><b>EspoCRM</b> customer records</li>
+          <li><b>+ any GitHub link</b> you paste in</li>
+        </ul>
+        <ul class="strip-list" aria-hidden="true">
+          <li><b>Twenty</b> sales CRM</li>
+          <li><b>Outline</b> team wiki</li>
+          <li><b>Plane</b> project planning</li>
+          <li><b>Documenso</b> contract signing</li>
+          <li><b>Listmonk</b> newsletters</li>
+          <li><b>Appsmith</b> internal dashboards</li>
+          <li><b>ToolJet</b> admin panels</li>
+          <li><b>EspoCRM</b> customer records</li>
+          <li><b>+ any GitHub link</b> you paste in</li>
+        </ul>
       </div>
+    </div>
+
+    <!-- THE CATCH -->
+    <section class="catch wrap" aria-labelledby="catch-title">
+      <p class="eyebrow reveal" id="catch-title"><span class="dot"></span>The catch</p>
+      <p class="catch-text" data-scrub>The best tools for your team are already free. They're sitting on GitHub, built and looked after by thousands of good people. The hard part is getting one running: a README written for engineers, a terminal, two databases and a developer's whole afternoon. So most teams sigh, and pay for one more subscription.</p>
+      <p class="catch-after reveal">Kitchen is that afternoon, done for you.</p>
     </section>
 
-    <div class="divider" aria-hidden="true">/* ··············· end of recipe ··············· */</div>
-
-    <!-- 4. ON THE MENU -->
-    <section class="section" id="menu">
+    <!-- THE RECIPE -->
+    <section class="recipe" id="recipe" aria-labelledby="recipe-title">
       <div class="wrap">
-        <div class="menu-head">
+        <header class="section-head">
           <div>
-            <p class="label">// 02 on the menu</p>
-            <h2 class="v-story">things you can <em>run today.</em></h2>
-            <h2 class="v-tech">today's <em>catalog.</em></h2>
+            <p class="eyebrow reveal"><span class="dot"></span>The recipe</p>
+            <h2 class="display reveal" id="recipe-title">From a GitHub link to an app on your dock, <em>in five steps.</em></h2>
           </div>
-          <p class="body-lg v-story">A few favourites from the menu. Or bring your own recipe: any open-source project works.</p>
-          <p class="body-lg v-tech">Curated apps, pre-tested on macOS. Or paste any public repo.</p>
-        </div>
+          <p class="reveal">Let's cook a real one. A twelve-person sales team needs a CRM, and their customer list isn't allowed to leave the office.</p>
+        </header>
 
-        <!-- Example apps: swap for the real launch catalog. -->
-        <div class="cards">
-          <article class="card">
-            <div class="card-top"><span class="v-story">// writing</span><span class="v-tech">notes-ai</span><span class="v-tech">~120 MB · python</span></div>
-            <h3>a private note taker</h3>
-            <p>Summarizes your docs. Never leaves your laptop.</p>
-          </article>
-          <article class="card">
-            <div class="card-top"><span class="v-story">// documents</span><span class="v-tech">ask-your-pdfs</span><span class="v-tech">~340 MB · python · pgvector</span></div>
-            <h3>chat with your contracts</h3>
-            <p>Ask questions across a whole folder of PDFs.</p>
-          </article>
-          <article class="card">
-            <div class="card-top"><span class="v-story">// finance</span><span class="v-tech">ledger-lite</span><span class="v-tech">~210 MB · node · postgres</span></div>
-            <h3>books and invoices</h3>
-            <p>Track invoices and expenses for a small business.</p>
-          </article>
-          <article class="card">
-            <div class="card-top"><span class="v-story">// meetings</span><span class="v-tech">whisper-desk</span><span class="v-tech">~600 MB · whisper.cpp</span></div>
-            <h3>a meeting transcriber</h3>
-            <p>Turns recordings into searchable notes, offline.</p>
-          </article>
-          <article class="card">
-            <div class="card-top"><span class="v-story">// team</span><span class="v-tech">team-wiki</span><span class="v-tech">~280 MB · node · redis</span></div>
-            <h3>a team wiki</h3>
-            <p>One shared home for how your team works.</p>
-          </article>
-          <article class="card">
-            <div class="card-top"><span class="v-story">// bring your own</span><span class="v-tech">github.com/you/app</span><span class="v-tech">any stack</span></div>
-            <h3>anything on GitHub</h3>
-            <p>Paste a link. We'll read the recipe.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- MID-PAGE BREAK: same table -->
-    <section class="sky break center" data-night aria-label="the big idea">
-      <div class="night" aria-hidden="true" data-stars="26"></div>
-      <div class="wrap">
-        <p class="label" style="color:inherit;opacity:.75">// same table</p>
-        <h2 class="v-story">software that used to need a server room <em>now sits next to the fruit bowl.</em></h2>
-        <h2 class="v-tech">a server room's worth of setup, <em>on localhost.</em></h2>
-      </div>
-      <div class="landscape" data-landscape></div>
-    </section>
-
-    <!-- 5. WHO'S AT THE TABLE -->
-    <section class="section" id="table">
-      <div class="wrap">
-        <div class="center">
-          <p class="label">// 03 who's at the table</p>
-          <h2 class="v-story">useful software, <em>minus the tech headache.</em></h2>
-          <h2 class="v-tech">use cases, <em>by seat.</em></h2>
-        </div>
-        <figure class="art table-art">
-          <canvas class="binary" data-art="table" role="img" aria-label="a long table with four plates, seen from above, made of binary digits"></canvas>
-        </figure>
-        <div class="seats">
-          <div class="seat">
-            <span class="step-no">seat 01</span>
-            <h3>the lawyer.</h3>
-            <p class="v-story">Reviews contracts with AI, and client files never leave the laptop.</p>
-            <p class="v-tech">Offline sandbox for privileged documents. Nothing hits a third-party server.</p>
-          </div>
-          <div class="seat">
-            <span class="step-no">seat 02</span>
-            <h3>the finance team.</h3>
-            <p class="v-story">Runs the tool the analyst found on GitHub, without filing an IT ticket.</p>
-            <p class="v-tech">Internal tools without a deploy pipeline, a VPC or a cloud budget.</p>
-          </div>
-          <div class="seat">
-            <span class="step-no">seat 03</span>
-            <h3>the ops lead.</h3>
-            <p class="v-story">Sets up one useful app, then shares it with the whole team in one click.</p>
-            <p class="v-tech">Share the full setup: config, env and data model, reproducible on every Mac.</p>
-          </div>
-          <div class="seat">
-            <span class="step-no">seat 04</span>
-            <h3>the builder.</h3>
-            <p class="v-story">Ships a project people can actually open, not a README they give up on.</p>
-            <p class="v-tech">Distribute builds to non-technical users. No "works on my machine".</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="divider" aria-hidden="true">/* ··············· end of seating ··············· */</div>
-
-    <!-- 6. HOUSE RULES (privacy) -->
-    <section class="section" id="house-rules">
-      <div class="wrap split reverse-mobile">
-        <div>
-          <p class="label">// 04 house rules</p>
-          <h2 class="v-story">home cooking. <em>your data stays home.</em></h2>
-          <h2 class="v-tech">local-first. <em>offline by default.</em></h2>
-          <p class="body-lg v-story" style="margin-top:24px">Runs on your laptop. Works offline. Nothing gets uploaded.</p>
-          <p class="body-lg v-tech" style="margin-top:24px">Apps run in a local, offline sandbox. No telemetry on your data. Secrets stay on your machine.</p>
-<pre class="receipt" aria-label="receipt: data sent to cloud, 0 megabytes">KITCHEN · TABLE 4
---------------------------------
-apps served .............. 3
-files uploaded ........... 0
-data sent to cloud ....... 0 MB
---------------------------------
-thank you. come again.</pre>
-        </div>
-        <figure class="art">
-          <canvas class="binary" data-art="jar" role="img" aria-label="a jar with a locked lid made of binary digits"></canvas>
-        </figure>
-      </div>
-    </section>
-
-    <!-- 7. RESERVE A TABLE (waitlist) + CHEF'S TABLE (teams) -->
-    <section class="section" id="reserve">
-      <div class="wrap split">
-        <div>
-          <p class="label">// 05 reserve a table</p>
-          <h2 class="v-story">save your seat. <em>we'll ring the dinner bell.</em></h2>
-          <h2 class="v-tech">get early access. <em>mac first.</em></h2>
-          <!-- Netlify Forms picks this up at deploy; submissions show under Forms → waitlist -->
-          <form class="waitlist" name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-waitlist="reserve" novalidate>
-            <input type="hidden" name="form-name" value="waitlist">
-            <input type="hidden" name="source" value="reserve">
-            <p class="sr-only"><label>leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-            <label class="sr-only" for="email">your work email</label>
-            <div class="input-row">
-              <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@company.com_">
-              <button class="btn" type="submit">⏎ reserve</button>
+        <div class="recipe-grid">
+          <div class="recipe-art" aria-hidden="true">
+            <div class="recipe-art-card">
+              <div class="recipe-art-head">
+                <span class="mono"><span id="step-num">01</span> / 05</span>
+                <span class="mono" id="step-dish">An empty plate</span>
+              </div>
+              <div class="recipe-art-stage"><canvas id="recipe-art"></canvas></div>
+              <div class="recipe-bar"><i id="recipe-bar"></i></div>
             </div>
-            <p class="waitlist-msg" role="status" aria-live="polite"></p>
-          </form>
-          <p class="fine">// no spam. one email when your table's ready.</p>
+          </div>
 
-          <aside class="chef-card" id="chefs-table">
-            <p class="label">// 06 chef's table</p>
-            <h3 class="v-story">rolling out to a team? <em>we'll cook with you.</em></h3>
-            <h3 class="v-tech">design partners <em>and enterprise packs.</em></h3>
-            <p class="v-story">We're working closely with a few teams in legal, finance and banking. Bring the apps you want. We'll bring the kitchen.</p>
-            <p class="v-tech">A private menu of approved apps for your org, shared setups across the team, and a direct line to the people building Kitchen.</p>
-            <a class="link" href="#chefs-table" data-demo="chefs-table">book a demo →</a>
-          </aside>
+          <ol class="steps">
+            <!-- 01 -->
+            <li class="step" data-scene="plate" data-dish="An empty plate">
+              <span class="mono step-count">01</span>
+              <h3 class="display">You're hungry.</h3>
+              <p>Your team needs a tool. A CRM for twelve people. A wiki that stays inside the office. A way to sign contracts without one more monthly bill.</p>
+              <p class="in-kitchen"><span class="tag">In Kitchen</span>You start with the job you need done, not with code.</p>
+              <div class="window">
+                <div class="window-bar"><span class="lights"><i></i><i></i><i></i></span><span>Kitchen · new request</span></div>
+                <div class="window-body">
+                  <div class="card-req">
+                    <span class="mono muted">What do you need?</span>
+                    <p class="req-line"><span class="type" data-type="A CRM for our 12-person sales team.">A CRM for our 12-person sales team.</span></p>
+                    <p class="muted small">Customer data can't leave the office.</p>
+                    <div class="chips"><span>CRM</span><span>12 seats</span><span>offline</span><span>no new subscription</span></div>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <!-- 02 -->
+            <li class="step" data-scene="menu" data-dish="The menu">
+              <span class="mono step-count">02</span>
+              <h3 class="display">Read the menu.</h3>
+              <p>Browse open-source apps we've already checked and packaged, or paste a link to any project on GitHub. Every dish starts from a recipe other teams already trust.</p>
+              <p class="in-kitchen"><span class="tag">In Kitchen</span>A reviewed menu, plus any GitHub link you bring.</p>
+              <div class="window">
+                <div class="window-bar"><span class="lights"><i></i><i></i><i></i></span><span>Kitchen · menu</span></div>
+                <div class="window-body">
+                  <div class="search"><span class="mono muted">search</span><span class="type" data-type="crm">crm</span><span class="caret"></span></div>
+                  <ul class="rows">
+                    <li class="row is-picked" style="--i:0"><span><b>Twenty</b> open-source CRM</span><span class="badge">vetted</span></li>
+                    <li class="row" style="--i:1"><span><b>EspoCRM</b> sales and contacts</span><span class="badge">vetted</span></li>
+                    <li class="row" style="--i:2"><span><b>SuiteCRM</b> CRM for bigger teams</span><span class="badge">vetted</span></li>
+                  </ul>
+                  <p class="mono muted small">or paste a GitHub link → github.com/…</p>
+                </div>
+              </div>
+            </li>
+
+            <!-- 03 -->
+            <li class="step" data-scene="ingredients" data-dish="The ingredients">
+              <span class="mono step-count">03</span>
+              <h3 class="display">Bring your ingredients.</h3>
+              <p>Drop in your spreadsheets, files and API keys on one screen. No config files. No pasting secrets into a text editor at midnight and hoping for the best.</p>
+              <p class="in-kitchen"><span class="tag">In Kitchen</span>Everything the app needs, added in one place.</p>
+              <div class="window">
+                <div class="window-bar"><span class="lights"><i></i><i></i><i></i></span><span>Twenty · add your data</span></div>
+                <div class="window-body">
+                  <ul class="rows">
+                    <li class="row file" style="--i:0"><span><b>customers.csv</b> 2,340 rows</span><span class="fill"><i></i></span></li>
+                    <li class="row file" style="--i:1"><span><b>deals-2026.xlsx</b> 418 rows</span><span class="fill"><i></i></span></li>
+                    <li class="row file" style="--i:2"><span><b>OpenAI key</b> <span class="mono">••••••••••••</span></span><span class="fill"><i></i></span></li>
+                  </ul>
+                  <p class="mono muted small">database → Postgres, on this Mac</p>
+                </div>
+              </div>
+            </li>
+
+            <!-- 04 -->
+            <li class="step" data-scene="pot" data-dish="On the stove">
+              <span class="mono step-count">04</span>
+              <h3 class="display">Kitchen does the cooking.</h3>
+              <p>We set up the database, fill in the settings and wire the pieces together. You can go make a cup of tea. It all happens on your Mac, and it works offline.</p>
+              <p class="in-kitchen"><span class="tag">In Kitchen</span>The setup a developer would do, done for you.</p>
+              <div class="window">
+                <div class="window-bar"><span class="lights"><i></i><i></i><i></i></span><span>Kitchen · cooking Twenty</span></div>
+                <div class="window-body">
+                  <ul class="log">
+                    <li style="--i:0"><span>soaking dependencies</span><span class="ok">✓</span></li>
+                    <li style="--i:1"><span>creating the database</span><span class="ok">✓</span></li>
+                    <li style="--i:2"><span>filling in settings</span><span class="ok">✓</span></li>
+                    <li style="--i:3"><span>importing your data</span><span class="ok">✓</span></li>
+                  </ul>
+                  <div class="meter"><span class="mono small">simmering…</span><span class="meter-bar"><i></i></span></div>
+                  <p class="mono muted small">sent to a server: 0 MB</p>
+                </div>
+              </div>
+            </li>
+
+            <!-- 05 -->
+            <li class="step" data-scene="serve" data-dish="Dinner's ready">
+              <span class="mono step-count">05</span>
+              <h3 class="display">Serve the table.</h3>
+              <p>Open it like any other app on your Mac. When you're happy, share it with your team in one click. Nobody on the team needs to know what Postgres is either.</p>
+              <p class="in-kitchen"><span class="tag">In Kitchen</span>A real app your whole team can use, today.</p>
+              <div class="window">
+                <div class="window-bar"><span class="lights"><i></i><i></i><i></i></span><span>Twenty · running on this Mac</span></div>
+                <div class="window-body">
+                  <ul class="rows">
+                    <li class="row" style="--i:0"><span><i class="pip"></i><b>Northwind Co.</b></span><span class="muted">proposal sent</span></li>
+                    <li class="row" style="--i:1"><span><i class="pip"></i><b>Bluebird Studio</b></span><span class="muted">demo booked</span></li>
+                    <li class="row" style="--i:2"><span><i class="pip"></i><b>Harbor &amp; Pine</b></span><span class="muted">renewal</span></li>
+                  </ul>
+                  <div class="share">
+                    <span class="faces"><i>AP</i><i>ML</i><i>SK</i><i>JD</i></span>
+                    <span class="small">Shared with the sales team</span>
+                    <span class="share-btn">Share</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ol>
         </div>
-        <figure class="art">
-          <canvas class="binary" data-art="bell" role="img" aria-label="a dinner bell made of binary digits"></canvas>
-          <figcaption class="art-label" aria-hidden="true">brewing…</figcaption>
-        </figure>
+
+        <p class="divider mono reveal" aria-hidden="true">/* ············ end of recipe ············ */</p>
       </div>
     </section>
 
-    <!-- the "what do you do?" answer after signup; hidden, Netlify only needs to see it at deploy -->
-    <form name="waitlist-role" data-netlify="true" netlify-honeypot="bot-field" hidden>
-      <input name="email"><input name="role"><input name="bot-field">
-    </form>
+    <!-- WHY -->
+    <section class="why wrap" id="why" aria-labelledby="why-title">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow reveal"><span class="dot"></span>Why Kitchen</p>
+          <h2 class="display reveal" id="why-title">Fast food is fast. <em>A recipe lasts.</em></h2>
+        </div>
+        <p class="reveal">You could ask an AI to write you a CRM from scratch. You'd have something by lunch. You'd also be the only team on earth using it. Kitchen starts you from software that thousands of teams already run every day.</p>
+      </header>
+
+      <div class="compare reveal" role="table" aria-label="A vibe-coded app compared with an app cooked in Kitchen">
+        <div class="compare-row compare-head" role="row">
+          <span role="columnheader"></span>
+          <span role="columnheader">Vibe-coded app</span>
+          <span role="columnheader">Cooked in Kitchen</span>
+        </div>
+        <div class="compare-row" role="row" style="--i:0">
+          <span role="rowheader">Starts from</span>
+          <span role="cell">A blank prompt and brand-new code</span>
+          <span role="cell">A project teams already rely on</span>
+        </div>
+        <div class="compare-row" role="row" style="--i:1">
+          <span role="rowheader">Tested by</span>
+          <span role="cell">Nobody yet</span>
+          <span role="cell">Its community first, then us</span>
+        </div>
+        <div class="compare-row" role="row" style="--i:2">
+          <span role="rowheader">Your data lives</span>
+          <span role="cell">Wherever the builder put it</span>
+          <span role="cell">On your own machines, online or off</span>
+        </div>
+        <div class="compare-row" role="row" style="--i:3">
+          <span role="rowheader">When it breaks</span>
+          <span role="cell">You re-prompt and hope</span>
+          <span role="cell">Real docs and years of fixes</span>
+        </div>
+        <div class="compare-row" role="row" style="--i:4">
+          <span role="rowheader">A year from now</span>
+          <span role="cell">Code nobody remembers writing</span>
+          <span role="cell">Still looked after by the people who made it</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRIVACY -->
+    <section class="home" aria-labelledby="home-title">
+      <div class="wrap home-inner">
+        <div class="home-copy">
+          <p class="eyebrow reveal"><span class="dot"></span>House rules</p>
+          <h2 class="display reveal" id="home-title">Home cooking. <em>Your data stays home.</em></h2>
+          <p class="reveal">Kitchen runs every app on your own machine. Your customer list, your contracts and your numbers never pass through our servers. We can't see them, because they never come to us.</p>
+          <ul class="facts reveal">
+            <li><b>Runs on your Mac.</b> Not in someone else's cloud.</li>
+            <li><b>Works offline.</b> Pull the Wi-Fi cable, it keeps going.</li>
+            <li><b>Nothing uploaded.</b> No telemetry on your data. Ever.</li>
+          </ul>
+        </div>
+        <div class="receipt reveal" aria-label="An example receipt for a day in Kitchen">
+          <p class="mono receipt-head">kitchen · receipt<br><span class="muted">table for 12 · today</span></p>
+          <ul>
+            <li><span>apps running</span><b data-count="3">0</b></li>
+            <li><span>databases set up</span><b data-count="2">0</b></li>
+            <li><span>teammates invited</span><b data-count="11">0</b></li>
+            <li><span>minutes in a terminal</span><b>0</b></li>
+          </ul>
+          <p class="receipt-total"><span>sent to the cloud</span><b>0 MB</b></p>
+          <p class="mono muted receipt-foot">thank you, come again ✓</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHO'S AT THE TABLE -->
+    <section class="table wrap" id="table" aria-labelledby="table-title">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow reveal"><span class="dot"></span>Who's at the table</p>
+          <h2 class="display reveal" id="table-title">For the people who usually <em>wait on IT.</em></h2>
+        </div>
+        <p class="reveal">You don't need to be technical. You just need a tool that works and somewhere safe to keep your data.</p>
+      </header>
+
+      <div class="guests">
+        <article class="guest reveal" style="--i:0">
+          <span class="mono guest-tag">01 · Marketing</span>
+          <h3 class="display">Move faster on real tools.</h3>
+          <p>Run a private wiki, a campaign hub or your own newsletter tool, without filing a ticket and waiting three sprints.</p>
+          <p class="mono guest-cmd"><span>$</span> kitchen cook outline</p>
+        </article>
+        <article class="guest reveal" style="--i:1">
+          <span class="mono guest-tag">02 · Product &amp; ops</span>
+          <h3 class="display">Systems that actually stick.</h3>
+          <p>Feedback boards, CRMs, planning tools. Set them up for the team that uses them, and keep them close to that team.</p>
+          <p class="mono guest-cmd"><span>$</span> kitchen cook plane</p>
+        </article>
+        <article class="guest reveal" style="--i:2">
+          <span class="mono guest-tag">03 · Finance &amp; legal</span>
+          <h3 class="display">Keep sensitive work close.</h3>
+          <p>Contracts, approvals and private numbers stay on machines you control. There's an offline sandbox for the really sensitive stuff.</p>
+          <p class="mono guest-cmd"><span>$</span> kitchen cook documenso</p>
+        </article>
+        <article class="guest reveal" style="--i:3">
+          <span class="mono guest-tag">04 · Builders</span>
+          <h3 class="display">Hand over something solid.</h3>
+          <p>Give non-technical teammates a real tool today, and customize it later if they come back asking for more.</p>
+          <p class="mono guest-cmd"><span>$</span> kitchen cook tooljet</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- WAYS IN + FORM -->
+    <section class="join" id="join" aria-labelledby="join-title">
+      <div class="wrap">
+        <header class="section-head">
+          <div>
+            <p class="eyebrow reveal"><span class="dot"></span>Pull up a chair</p>
+            <h2 class="display reveal" id="join-title">Three ways to <em>get a seat.</em></h2>
+          </div>
+          <p class="reveal">We're still in private build, and we'd rather grow slowly with the right people than quickly with everyone. Pick whichever fits.</p>
+        </header>
+
+        <div class="tiers">
+          <article class="tier reveal" style="--i:0" data-tier="waitlist">
+            <span class="mono tier-tag">Waitlist</span>
+            <h3 class="display">For the curious.</h3>
+            <p>Hear from us when it's ready, plus the odd sneak peek along the way. No spam. Honestly, we're too busy cooking.</p>
+            <ul><li>Launch news first</li><li>Early previews</li><li>Leave whenever you like</li></ul>
+            <button class="btn btn-ghost btn-sm" type="button" data-choose="waitlist">Choose this</button>
+          </article>
+          <article class="tier reveal" style="--i:1" data-tier="team">
+            <span class="mono tier-tag">Early access</span>
+            <h3 class="display">For teams with a need.</h3>
+            <p>We'll set up your first app together on a call, so your team gets something useful straight away.</p>
+            <ul><li>Hands-on first setup</li><li>Help picking the right base</li><li>Best with a clear use case</li></ul>
+            <button class="btn btn-ghost btn-sm" type="button" data-choose="team">Choose this</button>
+          </article>
+          <article class="tier tier-featured reveal" style="--i:2" data-tier="partner">
+            <span class="mono tier-tag">Design partner <span class="spark">chef's table</span></span>
+            <h3 class="display">For serious pilots.</h3>
+            <p>A one-month pilot with both founders on call. Your blockers go straight to the top of our list.</p>
+            <ul><li>Direct line to the founders</li><li>Offline sandbox for sensitive data</li><li>You help shape what we build</li></ul>
+            <button class="btn btn-ink btn-sm" type="button" data-choose="partner">Choose this</button>
+          </article>
+        </div>
+
+        <div class="booking reveal">
+          <div class="booking-copy">
+            <h3 class="display">Save me a seat.</h3>
+            <p>Takes about ten seconds. We'll write back like humans, usually within a day or two.</p>
+            <div class="booking-art"><canvas id="bell-art" aria-hidden="true"></canvas></div>
+          </div>
+
+          <div class="booking-form">
+            <form id="join-form" novalidate>
+              <fieldset class="seg" aria-label="Which seat?">
+                <label><input type="radio" name="kind" value="waitlist" checked><span>Waitlist</span></label>
+                <label><input type="radio" name="kind" value="team"><span>Early access</span></label>
+                <label><input type="radio" name="kind" value="partner"><span>Design partner</span></label>
+              </fieldset>
+              <label class="input">
+                <span>Work email</span>
+                <input type="email" name="email" placeholder="you@company.com" autocomplete="email" required>
+              </label>
+              <label class="input">
+                <span>Company <em>(optional)</em></span>
+                <input type="text" name="company" placeholder="Where do you work?" autocomplete="organization">
+              </label>
+              <label class="input" data-for="team partner">
+                <span>What would you cook first?</span>
+                <input type="text" name="need" placeholder="e.g. a private CRM for our sales team">
+              </label>
+              <p class="form-error" id="form-error" role="alert"></p>
+              <button class="btn btn-ink btn-block" type="submit" id="submit"><span class="mono">$</span> <span id="submit-label">Join the waitlist</span></button>
+              <p class="mono muted small form-note">Preview build: this form doesn't send anything yet.</p>
+            </form>
+
+            <div class="thanks" id="thanks" tabindex="-1" hidden>
+              <p class="mono thanks-log"><span>brewing…</span><span>plating…</span><span class="ok">served ✓</span></p>
+              <h3 class="display" id="thanks-title">You're on the list.</h3>
+              <p id="thanks-text">We'll ring the dinner bell the moment there's a seat for you.</p>
+              <button class="btn btn-ghost btn-sm" type="button" id="again">Add someone else</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq wrap" id="faq" aria-labelledby="faq-title">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow reveal"><span class="dot"></span>Questions</p>
+          <h2 class="display reveal" id="faq-title">Things people <em>usually ask.</em></h2>
+        </div>
+      </header>
+      <div class="qa">
+        <details class="reveal">
+          <summary>Do I need to know how to code?</summary>
+          <div><p>Not at all. If you can install an app on your Mac, you can use Kitchen. The whole idea is that you never have to open a terminal.</p></div>
+        </details>
+        <details class="reveal">
+          <summary>Where does my data actually go?</summary>
+          <div><p>Nowhere. The app runs on your machine and your files stay there. Once an app is set up, it keeps working with the Wi-Fi off.</p></div>
+        </details>
+        <details class="reveal">
+          <summary>Which apps can I run?</summary>
+          <div><p>Anything on our menu, which we test and package ourselves. You can also paste a link to most open-source projects on GitHub and Kitchen will have a go at cooking it.</p></div>
+        </details>
+        <details class="reveal">
+          <summary>Can my team use it too?</summary>
+          <div><p>Yes. Once an app is running, you can share it with your team in one click. They don't need to set anything up.</p></div>
+        </details>
+        <details class="reveal">
+          <summary>Is it only for Mac?</summary>
+          <div><p>For now, yes. We'd rather do one platform properly than three platforms badly.</p></div>
+        </details>
+        <details class="reveal">
+          <summary>How much will it cost?</summary>
+          <div><p>We'll share pricing before launch. Early users and design partners are helping us get it right, so it's a good time to have a say.</p></div>
+        </details>
+      </div>
+    </section>
   </main>
 
-  <!-- FOOTER: the full printed landscape -->
-  <footer class="sky footer" data-night>
-    <div class="night" aria-hidden="true" data-stars="30"></div>
-    <div class="wrap footer-top">
-      <div>
-        <span class="brand-word">kitchen</span>
-        <p class="footer-tag">made with love and a little too much garlic.</p>
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-cta">
+        <p class="display">Pick an app. <em>We'll do the cooking.</em></p>
+        <a class="btn btn-ink" href="#join">Get early access</a>
       </div>
-      <nav class="footer-links" aria-label="footer">
-        <a href="#menu">~/menu</a>
-        <a href="#reserve">./waitlist</a>
-        <a href="#recipe">./how-it-works</a>
-        <a href="#house-rules">./house-rules</a>
-        <a href="#chefs-table">./for-teams</a>
-        <a href="#chefs-table" data-demo="footer">./book-a-demo</a>
-      </nav>
-    </div>
-    <div class="landscape" data-landscape></div>
-    <div class="statusbar">
-      <span><span class="mode-chip" aria-hidden="true">NORMAL</span> © <span data-year>2026</span> kitchen</span>
-      <span class="hide-sm" aria-hidden="true"><span data-status-chip>brewing…</span> 3 apps on the stove</span>
-      <span aria-hidden="true">:wq</span>
+      <div class="wordmark"><canvas id="wordmark-art" role="img" aria-label="The word kitchen, made of binary digits"></canvas></div>
+      <div class="footer-row">
+        <span>Made with care, and a little too much garlic.</span>
+        <span class="footer-links">
+          <a href="#recipe">How it works</a>
+          <a href="#faq">Questions</a>
+          <a href="#join" data-choice-link="team">Book a demo</a>
+        </span>
+        <span>© <span id="year">2026</span> Kitchen</span>
+      </div>
     </div>
   </footer>
 
-  <!-- printed landscape, cloned into every [data-landscape] -->
-  <template id="landscape-tpl">
-    <svg viewBox="0 0 1440 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-      <defs>
-        <filter id="ls-rough" x="-5%" y="-15%" width="110%" height="130%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="2" seed="4"/>
-          <feDisplacementMap in="SourceGraphic" scale="12" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-        <filter id="ls-leaf" x="-10%" y="-15%" width="120%" height="130%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.11" numOctaves="2" seed="9"/>
-          <feDisplacementMap in="SourceGraphic" scale="13" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-      </defs>
-      <g class="ls-cloud" filter="url(#ls-rough)">
-        <path d="M0,196 C60,176 110,124 180,132 C220,96 290,90 330,122 C360,104 410,108 428,134 C470,130 500,152 498,176 C560,170 620,190 660,204 C720,200 770,174 830,180 C860,134 930,108 1000,126 C1040,90 1120,88 1170,122 C1220,112 1270,132 1300,164 C1360,154 1410,172 1440,176 L1440,380 L0,380 Z"/>
-        <path d="M470,96 C520,84 600,88 640,96 C600,103 520,104 470,96 Z"/>
-        <path d="M690,146 C760,132 860,134 910,146 C860,154 760,156 690,146 Z"/>
-        <path d="M1010,70 C1030,46 1062,36 1092,40 C1072,50 1042,62 1010,70 Z"/>
-        <path d="M110,74 C150,64 200,64 240,74 C200,81 150,82 110,74 Z"/>
-      </g>
-      <g class="ls-tree">
-        <rect x="296" y="214" width="9" height="166"/>
-        <path d="M300,250 L276,226 L279,223 L301,244 Z"/>
-        <path d="M301,236 L326,214 L329,217 L303,242 Z"/>
-        <g filter="url(#ls-leaf)">
-          <circle cx="300" cy="176" r="44"/><circle cx="262" cy="196" r="28"/><circle cx="340" cy="198" r="30"/>
-          <circle cx="278" cy="144" r="30"/><circle cx="326" cy="142" r="28"/><circle cx="302" cy="118" r="24"/>
-          <circle cx="250" cy="164" r="22"/><circle cx="354" cy="168" r="23"/><circle cx="300" cy="212" r="22"/>
-        </g>
-      </g>
-      <text class="ls-brace" x="266" y="172">{</text>
-      <text class="ls-brace" x="324" y="196">}</text>
-      <text class="ls-brace" x="300" y="136" style="font-size:15px">;</text>
-      <g class="ls-bush" filter="url(#ls-leaf)">
-        <path d="M760,380 C770,346 790,340 805,348 C815,326 840,322 855,334 C870,316 900,314 915,330 C935,310 965,308 985,322 C1005,304 1040,300 1060,316 C1085,296 1120,296 1140,310 C1165,292 1200,290 1220,304 C1250,286 1290,286 1310,300 C1340,282 1380,280 1400,294 C1420,288 1435,290 1440,292 L1440,380 Z"/>
-        <path d="M40,380 C44,356 62,352 74,362 C84,348 104,350 110,364 C118,356 130,358 134,370 L136,380 Z"/>
-        <path d="M326,380 C332,360 348,356 358,366 C368,354 386,356 392,372 L394,380 Z"/>
-      </g>
-    </svg>
-    <div class="field" aria-hidden="true"></div>
-  </template>
-
-  <script src="js/main.js" defer></script>
-  <script src="js/binary-art.js" defer></script>
+  <script src="js/binary.js?v=4" defer></script>
+  <script src="js/main.js?v=4" defer></script>
 </body>
 </html>
