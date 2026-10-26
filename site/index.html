@@ -65,7 +65,7 @@
   <!-- fonts load without holding up first paint; text shows in a fallback face for a moment -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;family=Instrument+Serif:ital@0;1&amp;display=swap"></noscript>
-  <link rel="stylesheet" href="css/styles.css?v=12">
+  <link rel="stylesheet" href="css/styles.css?v=13">
 </head>
 <body>
   <!--
@@ -87,6 +87,7 @@
         <span>kitchen</span>
       </a>
       <div class="nav-links">
+        <a href="#demo">Demo</a>
         <a href="#recipe">How it works</a>
         <a href="#why">Why Kitchen</a>
         <a href="#table">Who it's for</a>
@@ -175,6 +176,252 @@
       <p class="eyebrow reveal" id="catch-title"><span class="dot"></span>The catch</p>
       <p class="catch-text" data-scrub>The best tools for your team are already free. They're sitting on GitHub, built and looked after by communities of good people. The hard part is getting one running: a README written for engineers, a terminal, two databases and a developer's whole afternoon. So most teams sigh, and pay for one more subscription.</p>
       <p class="catch-after reveal">Kitchen is that afternoon, done for you.</p>
+    </section>
+
+    <!-- THE DEMO: a 78-second film drawn in the page's own style. The script lives in js/demo.js;
+         every caption is in the transcript list below, so change the words there and in demo.js together. -->
+    <section class="demo wrap" id="demo" aria-labelledby="demo-title">
+      <header class="section-head">
+        <div>
+          <p class="eyebrow reveal"><span class="dot"></span>The demo</p>
+          <h2 class="display reveal" id="demo-title">A whole launch, cooked <em>on one laptop.</em></h2>
+        </div>
+        <p class="reveal">Moka Moon is a small coffee brand launching a protein cold brew. Watch them go from nothing to a week of posts with three free apps, and no developer anywhere.</p>
+      </header>
+
+      <figure class="film reveal" id="film">
+        <div class="film-frame" id="film-frame">
+          <div class="film-stage" id="film-stage" aria-hidden="true">
+
+            <!-- the Kitchen app -->
+            <div class="fx-win">
+              <div class="fx-bar">
+                <span class="lights"><i></i><i></i><i></i></span>
+                <span class="fx-title" id="fx-title">Discover — Kitchen</span>
+                <span>offline ✓</span>
+              </div>
+              <div class="fx-body">
+                <aside class="fx-side">
+                  <div class="fx-brand"><span class="glyph"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>Kitchen</div>
+                  <div class="fx-search"><span>Search</span><span class="mono">⌘K</span></div>
+                  <ul class="fx-nav">
+                    <li data-nav="discover"><span class="fx-ico">◎</span>Discover</li>
+                    <li data-nav="library"><span class="fx-ico">▦</span>Library</li>
+                  </ul>
+                  <p class="fx-label">Your apps</p>
+                  <ul class="fx-apps">
+                    <li><b style="--c: var(--art-leaf)">Tn</b>Team notes</li>
+                    <li><b style="--c: var(--art-pasta)">Me</b>Memos</li>
+                    <li><b style="--c: var(--art-pot)">Ex</b>Excalidraw</li>
+                    <li><b style="--c: var(--art-tomato)">Ab</b>Actual Budget</li>
+                    <li><b style="--c: var(--art-leaf)">Wp</b>Weekend planner</li>
+                    <li class="fx-new" id="fx-app-pomelli" data-nav="pomelli"><b style="--c: var(--art-carrot)">Po</b>Open-Pomelli<i class="fx-dot"></i></li>
+                    <li class="fx-new" id="fx-app-opencut" data-nav="opencut"><b style="--c: var(--art-pot)">Oc</b>OpenCut<i class="fx-dot"></i></li>
+                    <li class="fx-new" id="fx-app-postiz" data-nav="postiz"><b style="--c: var(--art-tomato)">Pz</b>Postiz<i class="fx-dot"></i></li>
+                  </ul>
+                  <p class="fx-side-foot">Connections · 1</p>
+                </aside>
+
+                <div class="fx-main">
+                  <section class="fx-view" data-v="discover">
+                    <nav class="fx-tabs"><span class="is-on">Discover</span><span>Apps</span><span id="fx-tab-coll">Collections</span><span>Community</span></nav>
+                    <p class="fx-h">Apps to try</p>
+                    <div class="fx-row2">
+                      <div class="fx-tile"><div class="fx-thumb"><canvas data-art="sushi"></canvas></div><b>Excalidraw</b><span>Sketch ideas on a hand-drawn whiteboard.</span></div>
+                      <div class="fx-tile"><div class="fx-thumb"><canvas data-art="pasta"></canvas></div><b>Memos</b><span>Jot short notes and find them again later.</span></div>
+                    </div>
+                    <p class="fx-h">Collections to explore</p>
+                    <div class="fx-row3">
+                      <div class="fx-tile"><div class="fx-thumb"><canvas data-art="bell"></canvas></div><b>Launch a campaign</b></div>
+                      <div class="fx-tile"><div class="fx-thumb"><canvas data-art="serve"></canvas></div><b>Create and plan social content</b></div>
+                      <div class="fx-tile"><div class="fx-thumb"><canvas data-art="coffee"></canvas></div><b>A little room to think</b></div>
+                    </div>
+                  </section>
+
+                  <section class="fx-view" data-v="collections">
+                    <nav class="fx-tabs"><span>Discover</span><span>Apps</span><span class="is-on">Collections</span><span>Community</span></nav>
+                    <div class="fx-grid">
+                      <div class="fx-coll"><div class="fx-thumb"><canvas data-art="bell"></canvas></div><div><small>Kitchen · 4 apps</small><b>Launch a campaign</b><span>Plan it, write it, send it.</span></div></div>
+                      <div class="fx-coll"><div class="fx-thumb"><canvas data-art="ingredients"></canvas></div><div><small>Kitchen · 3 apps</small><b>Research your competitors</b><span>See what everyone else is up to.</span></div></div>
+                      <div class="fx-coll" id="fx-coll-social"><div class="fx-thumb"><canvas data-art="serve"></canvas></div><div><small>Kitchen · 3 apps</small><b>Create and plan social content</b><span>Posts, short videos and a calendar.</span></div></div>
+                      <div class="fx-coll"><div class="fx-thumb"><canvas data-art="menu"></canvas></div><div><small>Kitchen · 2 apps</small><b>Manage leads and newsletters</b><span>Keep in touch without the busywork.</span></div></div>
+                      <div class="fx-coll"><div class="fx-thumb"><canvas data-art="coffee"></canvas></div><div><small>Maya Chen · 3 apps</small><b>A little room to think</b><span>Notes, sketches and a reading list.</span></div></div>
+                      <div class="fx-coll"><div class="fx-thumb"><canvas data-art="pot"></canvas></div><div><small>Kitchen · 2 apps</small><b>Team notes and projects</b><span>One place for the whole team.</span></div></div>
+                    </div>
+                  </section>
+
+                  <section class="fx-view" data-v="collection">
+                    <p class="fx-back">← Collections</p>
+                    <div class="fx-hero">
+                      <div>
+                        <small>Collection · 3 apps · all open source</small>
+                        <h3 class="fx-serif">Create and plan social content</h3>
+                        <p>Turn your brand into posts, short videos and a posting calendar.</p>
+                        <p class="fx-tags"><span>marketing</span><span>content</span></p>
+                      </div>
+                      <div class="fx-thumb"><canvas data-art="serve"></canvas></div>
+                    </div>
+                    <div class="fx-install"><span class="fx-btn" id="fx-install">$ install all 3</span><span class="fx-note" id="fx-install-note">3 apps · runs on this laptop</span></div>
+                    <div class="fx-apps3">
+                      <div class="fx-app"><div class="fx-app-top"><b class="fx-badge" style="--c: var(--art-carrot)">Po</b><span class="fx-st">ready to install</span></div><b>Open-Pomelli</b><span>Reads your brand and drafts campaigns that sound like you.</span><div class="fx-prog"><i></i></div></div>
+                      <div class="fx-app"><div class="fx-app-top"><b class="fx-badge" style="--c: var(--art-pot)">Oc</b><span class="fx-st">ready to install</span></div><b>OpenCut</b><span>Edits short videos for your campaigns.</span><div class="fx-prog"><i></i></div></div>
+                      <div class="fx-app"><div class="fx-app-top"><b class="fx-badge" style="--c: var(--art-tomato)">Pz</b><span class="fx-st">ready to install</span></div><b>Postiz</b><span>Plans and schedules posts across your channels.</span><div class="fx-prog"><i></i></div></div>
+                    </div>
+                  </section>
+
+                  <section class="fx-view" data-v="pomelli">
+                    <nav class="fx-apptabs"><span class="is-on">Open-Pomelli</span><span>+</span></nav>
+                    <div class="fx-pom">
+                      <h3 class="fx-serif">Pomelli, running locally</h3>
+                      <p>Paste any website. It reads the brand, then writes campaigns that sound like it.</p>
+                      <div class="fx-input" id="fx-urlbox"><span id="fx-url"></span><i class="caret"></i><span class="fx-btn" id="fx-extract">extract →</span></div>
+                    </div>
+                    <div class="fx-brand-card" id="fx-brand">
+                      <div class="fx-brand-head">
+                        <span class="fx-logo">☾</span>
+                        <div><b>Moka Moon Coffee</b><small>mokamoon.coffee</small></div>
+                        <span class="fx-chip" id="fx-chip">reading…</span>
+                      </div>
+                      <dl class="fx-dna">
+                        <div><dt>Tagline</dt><dd>Strong enough to wake the moon.</dd></div>
+                        <div><dt>Sells</dt><dd>Cold brew, beans and instant coffee</dd></div>
+                        <div><dt>For</dt><dd>Night owls, students and early shifts</dd></div>
+                        <div><dt>Voice</dt><dd>Warm, cheeky, a little sleepy</dd></div>
+                        <div><dt>Colours</dt><dd class="fx-sw"><i style="background: #1d2b4f"></i><i style="background: #4a2f24"></i><i style="background: #e9dcc5"></i><i style="background: #f2c14e"></i></dd></div>
+                      </dl>
+                      <div class="fx-brand-actions"><span class="fx-btn ghost">save brand</span><span class="fx-btn" id="fx-newcamp">new campaign →</span></div>
+                    </div>
+                  </section>
+
+                  <section class="fx-view" data-v="campaign">
+                    <nav class="fx-apptabs"><span class="is-on">Open-Pomelli</span><span>+</span></nav>
+                    <div class="fx-camp">
+                      <div>
+                        <small>New campaign · Moka Moon</small>
+                        <h3 class="fx-serif">What are we cooking?</h3>
+                        <div class="fx-goals"><span id="fx-goal">Product launch</span><span>Brand awareness</span><span>Engagement</span><span>Lead generation</span></div>
+                        <div class="fx-input fx-area" id="fx-dirbox"><span id="fx-dir"></span><i class="caret"></i></div>
+                        <span class="fx-btn" id="fx-gen">generate 4 ideas</span>
+                      </div>
+                      <div class="fx-ideas">
+                        <p class="fx-wait" id="fx-wait">// four ideas will land here</p>
+                        <article class="fx-idea" id="fx-idea-0"><small>Idea 01</small><b>Protein, poured cold</b><span>Cold brew with a protein kick. Breakfast, sorted at 2 a.m.</span></article>
+                        <article class="fx-idea"><small>Idea 02</small><b>Wake the moon</b><span>A night-shift ritual: one can, one long exhale.</span></article>
+                        <article class="fx-idea"><small>Idea 03</small><b>Moon fuel</b><span>Gym at dawn, desk by nine. One drink does both.</span></article>
+                        <article class="fx-idea"><small>Idea 04</small><b>Night owls, fed</b><span>For the people who do their best work after dark.</span></article>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="fx-view" data-v="studio">
+                    <nav class="fx-apptabs"><span class="is-on">Open-Pomelli</span><span>+</span></nav>
+                    <div class="fx-studio">
+                      <div class="fx-post">
+                        <div class="fx-post-art"><canvas data-art="coldbrew" data-cue data-small="5.5"></canvas></div>
+                        <p class="fx-post-line fx-serif"><span id="fx-post-1">Cold brew,</span> <em id="fx-post-2">now with a protein kick.</em></p>
+                        <span class="fx-post-brand" id="fx-post-3">☾ moka moon</span>
+                      </div>
+                      <div class="fx-studio-mid">
+                        <small>Protein, poured cold · post 1 of 4</small>
+                        <h3 class="fx-serif">Your post, on brand</h3>
+                        <ul class="fx-sizes"><li>Instagram · 4:5 <i>✓</i></li><li>LinkedIn · 1:1 <i>✓</i></li><li>Stories · 9:16 <i>✓</i></li></ul>
+                        <span class="fx-btn" id="fx-animate">turn into a reel →</span>
+                        <div class="fx-render" id="fx-render"><span id="fx-render-label">rendering · 9:16 · 5s</span><div class="fx-prog"><i id="fx-render-bar"></i></div></div>
+                      </div>
+                      <div class="fx-phone" id="fx-phone">
+                        <div class="fx-phone-art" id="fx-phone-art"><canvas data-art="coldbrew" data-cue data-small="5"></canvas></div>
+                        <p class="fx-phone-line fx-serif" id="fx-phone-line">wake <em>the moon.</em></p>
+                        <span class="fx-phone-ui">♡ &nbsp;➤ &nbsp;· 0:05</span>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="fx-view" data-v="postiz">
+                    <nav class="fx-apptabs"><span>Open-Pomelli</span><span class="is-on">Postiz</span><span>+</span></nav>
+                    <div class="fx-cal-head">
+                      <h3 class="fx-serif">This week</h3>
+                      <span class="fx-note">Oct 26 – Nov 1 · Instagram · LinkedIn · TikTok</span>
+                      <span class="fx-btn" id="fx-sched">$ schedule 4 posts</span>
+                    </div>
+                    <div class="fx-cal" id="fx-cal">
+                      <div class="fx-slot" style="grid-column: 3; grid-row: 2"><i>☾</i><b>Moon fuel</b><small>Instagram · 8:00</small></div>
+                      <div class="fx-slot" style="grid-column: 5; grid-row: 2"><i>☾</i><b>Protein, poured cold</b><small>Instagram · 9:00</small></div>
+                      <div class="fx-slot" style="grid-column: 6; grid-row: 4"><i>▶</i><b>Wake the moon</b><small>TikTok · 18:00</small></div>
+                      <div class="fx-slot" style="grid-column: 8; grid-row: 5"><i>☾</i><b>Night owls, fed</b><small>LinkedIn · 21:00</small></div>
+                    </div>
+                    <p class="fx-note fx-cal-foot" id="fx-cal-foot">next up: Tuesday 8:00 · everything stays on this laptop until it posts</p>
+                  </section>
+                </div>
+              </div>
+
+              <!-- the permission sheet -->
+              <div class="fx-sheet" id="fx-sheet">
+                <div class="fx-sheet-card">
+                  <div class="fx-sheet-head"><b class="fx-badge" style="--c: var(--art-carrot)">Po</b><div><h4 class="fx-serif">Let Open-Pomelli use an AI connection?</h4><p>It needs one to write campaign ideas and make images.</p></div></div>
+                  <dl>
+                    <div><dt>Connection</dt><dd>Your OpenAI key · ••••4f2a</dd></div>
+                    <div><dt>It can see</dt><dd>Website text, briefs and images you add</dd></div>
+                    <div><dt>It can do</dt><dd>Write campaign ideas and make images</dd></div>
+                    <div><dt>Until</dt><dd>You take it back in Connections</dd></div>
+                  </dl>
+                  <div class="fx-sheet-actions"><span class="fx-btn ghost">Not now</span><span class="fx-btn" id="fx-allow">Use this connection</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- title cards -->
+            <div class="fx-card" id="fx-intro">
+              <div>
+                <p class="fx-kicker" data-line>// the brief</p>
+                <h3 class="fx-serif fx-big" data-line>Moka Moon is launching <em>a protein cold brew.</em></h3>
+                <p class="fx-card-sub" data-line>No agency. No developer. One laptop.</p>
+              </div>
+              <div class="fx-card-art"><canvas data-art="coldbrew" data-cue data-small="7"></canvas></div>
+            </div>
+            <div class="fx-card fx-card-flip" id="fx-end">
+              <div class="fx-card-art"><canvas data-art="coffee" data-cue data-small="7"></canvas></div>
+              <div>
+                <p class="fx-kicker" data-line>// served ✓ · 3 apps · 1 laptop · 0 terminals</p>
+                <h3 class="fx-serif fx-big" data-line>A whole launch, <em>cooked at home.</em></h3>
+                <p class="fx-card-sub" data-line>Pick an app. We'll do the cooking.</p>
+              </div>
+            </div>
+
+            <div class="fx-cursor" id="fx-cursor"><svg viewBox="0 0 24 24"><path d="M3 2.5 19.5 11l-7.2 1.9L8.6 20 3 2.5Z"/></svg></div>
+          </div>
+
+          <div class="film-over" id="film-over">
+            <button class="btn btn-ink" type="button" id="film-replay"><span aria-hidden="true">▶</span> <span id="film-replay-label">Play the demo</span></button>
+          </div>
+        </div>
+
+        <figcaption class="film-bar">
+          <button class="film-toggle" type="button" id="film-toggle" aria-label="Play the demo">
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5-12-7.5Z"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg>
+          </button>
+          <ol class="film-chapters" id="film-chapters" aria-label="Chapters"></ol>
+          <span class="film-time mono" id="film-time" aria-hidden="true">0:00</span>
+          <button class="film-full" type="button" id="film-full" aria-label="Watch full screen">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+          </button>
+        </figcaption>
+        <p class="film-caption" id="film-caption" aria-hidden="true"></p>
+
+        <ol class="sr-only" aria-label="What happens in the demo">
+          <li>Meet Moka Moon, a small coffee brand. They're launching a protein cold brew, with no agency and no developer.</li>
+          <li>Pick a dish. In Kitchen, a collection bundles the open-source apps for one job, like planning social content.</li>
+          <li>We prep it. Three apps install side by side in the background. No terminal, no setup, no servers.</li>
+          <li>Before an app can use AI, Kitchen asks first. Your key stays in one place, and you can take it back any time.</li>
+          <li>Paste the website. Open-Pomelli reads the brand: what it sells, who it's for and how it talks.</li>
+          <li>Pick a goal and add one line. Four campaign ideas come back, in the brand's own voice.</li>
+          <li>Choose an idea and it makes the post, already sized for each channel.</li>
+          <li>One more click turns the post into a short reel. OpenCut is installed too, for when you'd rather edit by hand.</li>
+          <li>Serve. Postiz lines up the whole week of posts, from the same laptop.</li>
+          <li>That's the whole launch: three free apps, one laptop, no developer.</li>
+        </ol>
+      </figure>
+      <p class="film-note reveal">Moka Moon is made up. Open-Pomelli, OpenCut and Postiz are real open-source apps.</p>
     </section>
 
     <!-- THE RECIPE -->
@@ -570,7 +817,8 @@
     </div>
   </footer>
 
-  <script src="js/binary.js?v=12" defer></script>
-  <script src="js/main.js?v=12" defer></script>
+  <script src="js/binary.js?v=13" defer></script>
+  <script src="js/main.js?v=13" defer></script>
+  <script src="js/demo.js?v=13" defer></script>
 </body>
 </html>

@@ -269,6 +269,31 @@
       return null;
     },
 
+    coldbrew: function (x, y, t, h) {
+      // the demo's protein cold brew: a tall glass with ice, a cream swirl, a striped straw, rising bubbles and a moon
+      if (ell(x, y, 0.83, 0.15, 0.085, 0.085) <= 1 && ell(x, y, 0.865, 0.125, 0.075, 0.075) > 1) return 'pasta';
+      if (seg(x, y, 0.6, 0.04, 0.52, 0.6) < 0.017) return Math.floor(y * 28) % 2 ? 'tomato' : 'cream';
+      var top = 0.2, bot = 0.88;
+      if (y < top || y > bot) return null;
+      var half = 0.21 - (y - top) * 0.06, dx = Math.abs(x - 0.5);
+      if (dx > half) return null;
+      if (dx > half - 0.02 || y > bot - 0.025 || y < top + 0.015) return 'pot';
+      if (y < 0.27) return null;
+      var ice = [[0.42, 0.33, 0.3], [0.57, 0.35, -0.4], [0.49, 0.45, 0.15]];
+      for (var i = 0; i < ice.length; i++) {
+        var c = Math.cos(ice[i][2]), s = Math.sin(ice[i][2]);
+        var u = (x - ice[i][0]) * c - (y - ice[i][1]) * s, v = (x - ice[i][0]) * s + (y - ice[i][1]) * c;
+        var m = Math.max(Math.abs(u), Math.abs(v));
+        if (m < 0.055) return m > 0.038 ? 'steam' : 'cream';
+      }
+      for (var b = 0; b < 6; b++) {
+        var by = bot - 0.04 - ((t * 0.06 + hash(b, 7)) % 1) * 0.5;
+        if (ell(x, y, 0.36 + b * 0.055 + Math.sin(t * 2 + b) * 0.01, by, 0.012, 0.009) <= 1) return 'cream';
+      }
+      if (y > 0.5 && y < 0.66 && Math.sin(x * 34 + y * 26 + Math.sin(y * 18) * 2) > 0.72) return 'cream';
+      return y < 0.56 ? 'carrot' : (h > 0.25 ? 'tomato' : 'carrot');
+    },
+
     burger: function (x, y, t, h) {
       var cx = 0.5;
       // top bun with sesame seeds
@@ -439,6 +464,12 @@
     this.draw(performance.now() / 1000);
   };
 
+  // a picture on a screen that isn't showing (like one step of the demo film) can sit out the animation loop
+  BinaryArt.prototype.hide = function (hidden) {
+    this.hidden = !!hidden;
+    if (!this.hidden) wake();
+  };
+
   BinaryArt.prototype.computeDelays = function () {
     for (var i = 0; i < this.delay.length; i++) {
       var dx = this.nx[i] - 0.5, dy = this.ny[i] - 0.5;
@@ -528,13 +559,13 @@
   // so it drops to ~15fps (~10 on low-power devices)
   var IDLE = lowPower ? 0.1 : 0.066;
   function tick(now) {
-    if (!arts.some(function (a) { return a.visible; })) { running = false; return; }
+    if (!arts.some(function (a) { return a.visible && !a.hidden; })) { running = false; return; }
     requestAnimationFrame(tick);
     if (now - lastTick < 33) return;
     lastTick = now;
     var t = now / 1000;
     arts.forEach(function (a) {
-      if (!a.visible) return;
+      if (!a.visible || a.hidden) return;
       var busy = !a.settled || a.pointer.s > 0;
       if (busy || t - a.lastDraw >= IDLE) a.draw(t);
     });
